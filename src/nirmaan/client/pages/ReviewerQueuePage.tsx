@@ -128,7 +128,7 @@ export function ReviewerQueuePage() {
               </span>
             </div>
             <p className="text-xs text-muted-foreground mt-1">
-              Field voice & form actuals mapped against Primavera P6 activities via pgvector cosine similarity.
+              Submitted field observations are ranked against Primavera P6 activities and held for planner review when confidence is insufficient.
             </p>
           </div>
 

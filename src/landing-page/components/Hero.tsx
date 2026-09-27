@@ -34,7 +34,7 @@ export function Hero() {
           </h1>
 
           <p className="text-muted-foreground mx-auto max-w-2xl text-base sm:text-lg leading-relaxed">
-            Bridging frontline cross-country pipeline execution with Primavera P6 enterprise schedules. Monotonic hardware clock ordering, offline audio transcription, pgvector semantic candidate matching, and in-process CPM slip forecasting.
+            Connect field observations to Primavera P6 enterprise schedules with confidence-based activity ranking, planner review, and CPM slip forecasting.
           </p>
 
           <div className="pt-2 flex flex-wrap items-center justify-center gap-4">
@@ -119,7 +119,7 @@ export function Hero() {
                   <Database className="w-3.5 h-3.5 text-blue-500" />
                   Historical Benchmarks
                 </div>
-                <div className="text-2xl font-bold text-foreground mt-1">18 OIL Projects</div>
+                <div className="text-2xl font-bold text-foreground mt-1">Workspace projects</div>
                 <div className="text-[11px] text-muted-foreground mt-0.5">Monsoon slip factor: +22.4%</div>
               </div>
             </div>

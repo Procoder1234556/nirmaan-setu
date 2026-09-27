@@ -20,7 +20,7 @@ export const features: GridFeature[] = [
     name: "In-Process CPM Float & Slip Engine",
     description: "Automated forward and backward pass graph calculations detecting negative total float and predicting milestone slips in real time.",
     emoji: "📐",
-    href: "/projects/proj-oil-assam-01",
+    href: "/projects",
     size: "medium",
   },
   {
@@ -31,7 +31,7 @@ export const features: GridFeature[] = [
     size: "small",
   },
   {
-    name: "pgvector Semantic Reconciliation",
+    name: "Confidence-based Activity Reconciliation",
     description: "Vector cosine similarity matching frontline field voice notes directly to P6 schedule activities with confidence scoring.",
     emoji: "🧠",
     href: "/reviewer-queue",
@@ -62,7 +62,7 @@ export const features: GridFeature[] = [
     name: "Direct Primavera P6 .XER Export",
     description: "Generate updated .XER schedule files with verified actuals for seamless round-trip synchronization back into Primavera P6.",
     emoji: "💾",
-    href: "/projects/proj-oil-assam-01",
+    href: "/projects",
     size: "medium",
   },
 ];
@@ -114,14 +114,14 @@ export const faqs = [
     id: 4,
     question: "Can verified actuals be exported back into enterprise Primavera P6?",
     answer: "Yes. Verified actual start dates, finish dates, and percentage completes can be exported as an updated .XER schedule ready for direct import into Primavera P6.",
-    href: "/projects/proj-oil-assam-01",
+    href: "/projects",
   },
 ];
 
 export const footerNavigation = {
   app: [
     { name: "Projects Portfolio", href: "/projects" },
-    { name: "CPM Schedule & Gantt", href: "/projects/proj-oil-assam-01" },
+    { name: "CPM Schedule & Gantt", href: "/projects" },
     { name: "Reviewer Queue", href: "/reviewer-queue" },
     { name: "Field Logger PWA", href: "/field-log" },
     { name: "Historical Benchmarks", href: "/knowledge-base" },
@@ -138,7 +138,7 @@ export const examples = [
     name: "132km Crude Pipeline Sec-IV",
     description: "OIL-ASSAM-PL-2026: Cross-country high-pressure crude transmission pipeline with Brahmaputra HDD river crossing.",
     imageSrc: kivo,
-    href: "/projects/proj-oil-assam-01",
+    href: "/projects",
   },
   {
     name: "Numaligarh Refinery Expansion Feedline",

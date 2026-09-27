@@ -30,7 +30,7 @@ export function NirmaanHeader({ currentTab, projectId }: NirmaanHeaderProps) {
     {
       id: 'details',
       label: 'CPM Schedule & Gantt',
-      href: projectId ? `/projects/${projectId}` : '/projects/proj-oil-assam-01',
+      href: projectId ? `/projects/${projectId}` : '/projects',
       icon: Calendar,
     },
     {
@@ -66,18 +66,15 @@ export function NirmaanHeader({ currentTab, projectId }: NirmaanHeaderProps) {
       <div className="border-b border-border/40 bg-muted/40 px-4 py-1.5 text-xs text-muted-foreground flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center px-1.5 py-0.5 rounded font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-            OIL INDIA LIMITED
+            SIH26122 · OIL INDIA LIMITED
           </span>
           <span className="hidden sm:inline text-muted-foreground/60">|</span>
-          <span className="hidden sm:inline font-mono">Duliajan Field Headquarters — Asset Integrity Division</span>
+          <span className="hidden sm:inline font-mono">Infrastructure project controls workspace</span>
         </div>
         <div className="flex items-center gap-3">
-          <span className="flex items-center gap-1 font-mono">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            Causal Sync Gateway: Active
-          </span>
+          <span className="flex items-center gap-1 font-mono">Schedule data is updated from submitted field logs</span>
           <span className="text-muted-foreground/60">|</span>
-          <span className="font-semibold text-foreground">Role: SENIOR_PLANNER</span>
+          <span className="font-semibold text-foreground">Project controls</span>
         </div>
       </div>
 
@@ -97,7 +94,7 @@ export function NirmaanHeader({ currentTab, projectId }: NirmaanHeaderProps) {
                   </span>
                 </h1>
                 <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
-                  v2.4 Primavera P6 Sync
+                  Schedule workspace
                 </span>
               </div>
               <p className="text-xs text-muted-foreground">

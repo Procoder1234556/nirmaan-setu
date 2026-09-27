@@ -29,7 +29,7 @@ export function ProjectDetailsPage(props: any) {
     routerParams.projectId ||
     props?.match?.params?.projectId ||
     props?.params?.projectId ||
-    'proj-oil-assam-01';
+    '';
 
   const { project, activities, predictions, refetch } = useProjectDetails(projectId);
 

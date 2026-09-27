@@ -22,7 +22,7 @@ import {
 } from 'lucide-react';
 
 export function ProjectsDashboardPage() {
-  const { projects, refetch } = useProjects();
+  const { projects, refetch, isLoading, error } = useProjects();
   const { pendingCount } = useReviewerQueue();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'GREEN' | 'AMBER' | 'RED'>('ALL');
@@ -46,6 +46,7 @@ export function ProjectsDashboardPage() {
   const totalProjects = projects.length;
   const maxCriticalPathSlip = Math.max(...projects.map((p) => p.criticalPathDelayDays), 0);
   const totalFieldEvents = projects.reduce((acc, p) => acc + (p.fieldEventsCount || 0), 0);
+  const mostDelayedProject = projects.reduce<typeof projects[number] | undefined>((current, project) => !current || project.criticalPathDelayDays > current.criticalPathDelayDays ? project : current, undefined);
 
   // Filtered projects
   const filteredProjects = projects.filter((p) => {
@@ -116,7 +117,7 @@ export function ProjectsDashboardPage() {
               Projects Portfolio & Health Cockpit
             </h2>
             <p className="text-sm text-muted-foreground mt-1">
-              Real-time monitoring of Oil India capital pipeline & facility schedules against Primavera P6 baselines.
+              Upload a schedule baseline, review submitted progress observations, and monitor calculated CPM health.
             </p>
           </div>
           <button
@@ -168,7 +169,7 @@ export function ProjectsDashboardPage() {
               </div>
               <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1 font-mono">
                 <span className="w-2 h-2 rounded-full bg-red-500 inline-block" />
-                OIL-ASSAM-PL-2026 milestone breached
+                {mostDelayedProject?.criticalPathDelayDays ? `${mostDelayedProject.code} has the highest recorded variance` : 'No schedule variance recorded yet'}
               </p>
             </div>
           </div>
@@ -208,7 +209,7 @@ export function ProjectsDashboardPage() {
             <div className="mt-3">
               <div className="text-3xl font-extrabold text-foreground">{totalFieldEvents}</div>
               <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                <span className="text-emerald-500 font-semibold">100% Monotonic</span> verified sequence
+                Field observations received by this workspace
               </p>
             </div>
           </div>
@@ -267,6 +268,9 @@ export function ProjectsDashboardPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
+                {!isLoading && filteredProjects.length === 0 && (
+                  <tr><td colSpan={7} className="px-6 py-12 text-center"><p className="font-semibold text-foreground">No project baselines yet</p><p className="mt-1 text-xs text-muted-foreground">Upload a Primavera XER or MS Project XML baseline to start the schedule workflow.</p></td></tr>
+                )}
                 {filteredProjects.map((project) => (
                   <tr key={project.id} className="hover:bg-muted/30 transition-colors">
                     <td className="px-6 py-4">
@@ -334,6 +338,7 @@ export function ProjectsDashboardPage() {
             </table>
           </div>
         </div>
+        {error && <p role="alert" className="text-xs text-destructive">Unable to load workspace projects: {error}</p>}
 
         {/* Upload Baseline Modal */}
         {isUploadModalOpen && (
@@ -432,14 +437,14 @@ export function ProjectsDashboardPage() {
 
                   {/* Quick Preset Button */}
                   <div className="pt-2 flex justify-between items-center text-xs">
-                    <span className="text-muted-foreground">Don't have a P6 file handy?</span>
+                    <span className="text-muted-foreground">Need a format example?</span>
                     <button
                       type="button"
                       onClick={handleLoadSampleXER}
                       className="inline-flex items-center gap-1.5 text-primary hover:underline font-semibold cursor-pointer"
                     >
                       <Sparkles className="w-3.5 h-3.5" />
-                      Load Sample Oil India Brahmaputra Baseline
+                      Load sample pipeline baseline
                     </button>
                   </div>
 

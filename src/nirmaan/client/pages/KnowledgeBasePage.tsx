@@ -1,297 +1,36 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
+import { AlertTriangle, BarChart3, Database, Search, TrendingUp } from 'lucide-react';
 import { NirmaanHeader } from '../components/NirmaanHeader';
 import { useHistoricalBenchmarks } from '../operationsClient';
-import {
-  Database,
-  Search,
-  Filter,
-  BarChart3,
-  TrendingUp,
-  AlertTriangle,
-  Layers,
-  Sparkles,
-  CloudRain,
-  Building2,
-  Calendar,
-  CheckCircle2,
-} from 'lucide-react';
 
 export function KnowledgeBasePage() {
-  const [disciplineFilter, setDisciplineFilter] = useState<string>('ALL');
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [disciplineFilter, setDisciplineFilter] = useState('ALL');
+  const [searchTerm, setSearchTerm] = useState('');
+  const { benchmarks } = useHistoricalBenchmarks();
+  const filteredBenchmarks = useMemo(() => benchmarks.filter((benchmark) => {
+    const matchesDiscipline = disciplineFilter === 'ALL' || benchmark.discipline === disciplineFilter;
+    const query = searchTerm.trim().toLowerCase();
+    const matchesSearch = !query || benchmark.historicalProjectCode.toLowerCase().includes(query) || benchmark.workType.toLowerCase().includes(query) || benchmark.recordedDelays.some((delay) => delay.cause.toLowerCase().includes(query));
+    return matchesDiscipline && matchesSearch;
+  }), [benchmarks, disciplineFilter, searchTerm]);
+  const analytics = useMemo(() => {
+    const averageVariance = benchmarks.length ? benchmarks.reduce((sum, item) => sum + item.variancePercentage, 0) / benchmarks.length : 0;
+    const causes = new Map<string, number>();
+    benchmarks.flatMap((item) => item.recordedDelays).forEach((delay) => causes.set(delay.cause, (causes.get(delay.cause) || 0) + delay.days));
+    const rankedCauses = [...causes.entries()].sort((a, b) => b[1] - a[1]);
+    const totalDays = rankedCauses.reduce((sum, [, days]) => sum + days, 0);
+    return { averageVariance, rankedCauses, totalDays };
+  }, [benchmarks]);
 
-  const { benchmarks } = useHistoricalBenchmarks(disciplineFilter);
+  return <div className="min-h-screen bg-background pb-12"><NirmaanHeader currentTab="knowledge-base" /><main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div><div className="flex flex-wrap items-center gap-2"><h2 className="text-2xl font-bold tracking-tight text-foreground">Closed-project historical benchmarks</h2><span className="px-2.5 py-0.5 rounded-full text-xs font-bold font-mono bg-primary/10 text-primary border border-primary/20">{benchmarks.length} records</span></div><p className="text-xs text-muted-foreground mt-1">Records appear here only after they have been added to the connected workspace database.</p></div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"><MetricCard label="Benchmark records" value={String(benchmarks.length)} copy="Closed-project duration records available in this workspace." icon={<Database className="w-4 h-4" />} /><MetricCard label="Average schedule variance" value={(analytics.averageVariance >= 0 ? '+' : '') + analytics.averageVariance.toFixed(1) + '%'} copy={benchmarks.length ? 'Calculated from the records shown below.' : 'Add records to calculate this measure.'} icon={<TrendingUp className="w-4 h-4" />} /><MetricCard label="Leading recorded delay" value={analytics.rankedCauses[0]?.[0] || 'No delay data'} copy={analytics.rankedCauses[0] ? analytics.rankedCauses[0][1] + ' recorded delay days.' : 'No historical delay causes have been recorded.'} icon={<AlertTriangle className="w-4 h-4" />} compact /></div>
+    <section className="p-6 rounded-2xl border border-border bg-card/60 shadow-sm space-y-4"><div className="flex items-center justify-between gap-4"><h3 className="text-sm font-bold text-foreground flex items-center gap-2"><BarChart3 className="w-4 h-4 text-primary" />Delay causes from recorded projects</h3><span className="text-xs text-muted-foreground font-mono">{analytics.totalDays} delay days</span></div>{analytics.rankedCauses.length ? <div className="space-y-3">{analytics.rankedCauses.slice(0, 5).map(([cause, days]) => <div key={cause} className="space-y-1"><div className="flex items-center justify-between gap-3 text-xs font-semibold"><span className="text-foreground truncate">{cause}</span><span className="font-mono text-muted-foreground shrink-0">{days}d</span></div><div className="w-full bg-muted rounded-full h-2 overflow-hidden"><div className="bg-primary h-2 rounded-full" style={{ width: Math.max(3, (days / analytics.totalDays) * 100) + '%' }} /></div></div>)}</div> : <p className="py-6 text-center text-sm text-muted-foreground">No historical delay data has been added yet.</p>}</section>
+    <section className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-xl border border-border bg-card/40"><div className="relative w-full sm:w-80"><Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" /><input type="search" aria-label="Search historical benchmark records" placeholder="Search projects, work types, or delay causes…" value={searchTerm} onChange={(event) => setSearchTerm(event.target.value)} className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/40" /></div><div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto"><span className="text-xs text-muted-foreground whitespace-nowrap">Discipline:</span>{['ALL', 'Piping', 'Civil', 'Electrical', 'Instrumentation'].map((discipline) => <button key={discipline} onClick={() => setDisciplineFilter(discipline)} className={'px-3 py-1.5 rounded-lg text-xs font-medium transition-all ' + (disciplineFilter === discipline ? 'bg-primary text-primary-foreground font-semibold shadow-xs' : 'bg-muted text-muted-foreground hover:text-foreground')}>{discipline === 'ALL' ? 'All' : discipline}</button>)}</div></section>
+    {filteredBenchmarks.length ? <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">{filteredBenchmarks.map((benchmark) => <article key={benchmark.id} className="p-5 rounded-2xl border border-border bg-card shadow-sm space-y-4"><div className="flex items-center justify-between gap-3"><span className="font-mono text-xs font-bold text-primary">{benchmark.historicalProjectCode}</span><span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-secondary text-secondary-foreground">{benchmark.discipline}</span></div><h4 className="text-sm font-bold text-foreground">{benchmark.workType}</h4><div className="grid grid-cols-2 gap-2 text-xs font-mono bg-muted/40 p-3 rounded-xl border border-border/60"><div><span className="text-[10px] text-muted-foreground block">Planned</span><span className="font-bold text-foreground">{benchmark.plannedDurationDays} days</span></div><div><span className="text-[10px] text-muted-foreground block">Actual</span><span className="font-bold text-foreground">{benchmark.actualDurationDays} days</span></div></div><div className="flex justify-between text-xs"><span className="text-muted-foreground">Variance</span><span className="font-mono font-bold">{benchmark.variancePercentage >= 0 ? '+' : ''}{benchmark.variancePercentage}%</span></div><div className="border-t border-border/60 pt-3 space-y-1"><span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide">Recorded delay causes</span>{benchmark.recordedDelays.length ? benchmark.recordedDelays.map((delay, index) => <p key={index} className="text-xs text-muted-foreground flex justify-between gap-2"><span>{delay.cause}</span><span className="font-mono shrink-0">{delay.days}d</span></p>) : <p className="text-xs text-muted-foreground">No delay causes recorded.</p>}</div></article>)}</div> : <div className="rounded-2xl border border-dashed border-border bg-card/40 py-16 text-center"><h3 className="font-semibold text-foreground">No benchmark records found</h3><p className="mt-2 text-sm text-muted-foreground">Adjust your filters or add a closed-project record to the database.</p></div>}
+  </main></div>;
+}
 
-  // Filter benchmarks by search
-  const filteredBenchmarks = useMemo(() => {
-    return benchmarks.filter((b) => {
-      const matchSearch =
-        b.historicalProjectCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        b.workType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        b.recordedDelays.some((d) => d.cause.toLowerCase().includes(searchTerm.toLowerCase()));
-      return matchSearch;
-    });
-  }, [benchmarks, searchTerm]);
-
-  // Aggregate KPI stats
-  const totalClosedProjects = 18;
-  const avgVariance = 12.8;
-  const monsoonImpactFactor = 22.4;
-
-  return (
-    <div className="min-h-screen bg-background pb-12">
-      <NirmaanHeader currentTab="knowledge-base" />
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {/* Title Header */}
-        <div>
-          <div className="flex items-center gap-2">
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">
-              Closed-Project Historical Benchmarks
-            </h2>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-bold font-mono bg-primary/10 text-primary border border-primary/20">
-              18 OIL Capital Projects
-            </span>
-          </div>
-          <p className="text-xs text-muted-foreground mt-1">
-            Empirical duration variance, monsoon seasonal delays, and contractor performance benchmarks from past Oil India trunkline executions.
-          </p>
-        </div>
-
-        {/* Discipline Variance Analytics Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Card 1 */}
-          <div className="p-5 rounded-2xl border border-border bg-card/60 shadow-sm space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                Benchmarked Assets
-              </span>
-              <div className="p-2 rounded-xl bg-primary/10 text-primary">
-                <Database className="w-4 h-4" />
-              </div>
-            </div>
-            <div className="text-3xl font-extrabold text-foreground">{totalClosedProjects}</div>
-            <p className="text-xs text-muted-foreground">
-              Closed pipelines & refineries across Upper Assam & Bihar
-            </p>
-          </div>
-
-          {/* Card 2 */}
-          <div className="p-5 rounded-2xl border border-border bg-card/60 shadow-sm space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                Average Schedule Slip
-              </span>
-              <div className="p-2 rounded-xl bg-amber-500/10 text-amber-500">
-                <TrendingUp className="w-4 h-4" />
-              </div>
-            </div>
-            <div className="text-3xl font-extrabold text-amber-600 dark:text-amber-400 font-mono">
-              +{avgVariance}%
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Mean empirical baseline extension across all disciplines
-            </p>
-          </div>
-
-          {/* Card 3 */}
-          <div className="p-5 rounded-2xl border border-border bg-card/60 shadow-sm space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                Assam Monsoon Penalty
-              </span>
-              <div className="p-2 rounded-xl bg-blue-500/10 text-blue-500">
-                <CloudRain className="w-4 h-4" />
-              </div>
-            </div>
-            <div className="text-3xl font-extrabold text-blue-600 dark:text-blue-400 font-mono">
-              +{monsoonImpactFactor}%
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Historical variance multiplier during June–September
-            </p>
-          </div>
-
-          {/* Card 4 */}
-          <div className="p-5 rounded-2xl border border-border bg-card/60 shadow-sm space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                Primary Delay Driver
-              </span>
-              <div className="p-2 rounded-xl bg-red-500/10 text-red-500">
-                <AlertTriangle className="w-4 h-4" />
-              </div>
-            </div>
-            <div className="text-lg font-bold text-foreground truncate">
-              RoW Land Clearance
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Accounts for 41.2% of all recorded critical path slips
-            </p>
-          </div>
-        </div>
-
-        {/* Delay Cause Distribution Bar */}
-        <div className="p-6 rounded-2xl border border-border bg-card/60 shadow-sm space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-primary" />
-              Historical Delay Cause Distribution Breakdown
-            </h3>
-            <span className="text-xs text-muted-foreground font-mono">Normalized n=142 Incidents</span>
-          </div>
-
-          <div className="space-y-3">
-            {/* Cause 1 */}
-            <div className="space-y-1">
-              <div className="flex items-center justify-between text-xs font-semibold">
-                <span className="text-foreground">Right of Way (RoW) & Forest Land Statutory Clearance</span>
-                <span className="font-mono text-muted-foreground">41.2%</span>
-              </div>
-              <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
-                <div className="bg-red-500 h-2 rounded-full" style={{ width: '41.2%' }} />
-              </div>
-            </div>
-
-            {/* Cause 2 */}
-            <div className="space-y-1">
-              <div className="flex items-center justify-between text-xs font-semibold">
-                <span className="text-foreground">Brahmaputra Tributary Monsoon Flash Flooding & Scour</span>
-                <span className="font-mono text-muted-foreground">28.5%</span>
-              </div>
-              <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
-                <div className="bg-blue-500 h-2 rounded-full" style={{ width: '28.5%' }} />
-              </div>
-            </div>
-
-            {/* Cause 3 */}
-            <div className="space-y-1">
-              <div className="flex items-center justify-between text-xs font-semibold">
-                <span className="text-foreground">Special Valve & High-Pressure Compressor Vendor Supply</span>
-                <span className="font-mono text-muted-foreground">17.8%</span>
-              </div>
-              <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
-                <div className="bg-amber-500 h-2 rounded-full" style={{ width: '17.8%' }} />
-              </div>
-            </div>
-
-            {/* Cause 4 */}
-            <div className="space-y-1">
-              <div className="flex items-center justify-between text-xs font-semibold">
-                <span className="text-foreground">Qualified Orbital Welder & NDT Inspector Shortage</span>
-                <span className="font-mono text-muted-foreground">12.5%</span>
-              </div>
-              <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
-                <div className="bg-purple-500 h-2 rounded-full" style={{ width: '12.5%' }} />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Filter & Search Bar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-xl border border-border bg-card/40">
-          <div className="relative w-full sm:w-80">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Search historical projects, work types, or delay drivers..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/40"
-            />
-          </div>
-
-          <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto">
-            <span className="text-xs text-muted-foreground whitespace-nowrap">Discipline:</span>
-            {['ALL', 'Piping', 'Civil', 'Electrical', 'Instrumentation'].map((disc) => (
-              <button
-                key={disc}
-                onClick={() => setDisciplineFilter(disc)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                  disciplineFilter === disc
-                    ? 'bg-primary text-primary-foreground font-semibold shadow-xs'
-                    : 'bg-muted text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                {disc === 'ALL' ? 'All' : disc}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Benchmarks Grid / Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredBenchmarks.map((bm) => (
-            <div
-              key={bm.id}
-              className="p-5 rounded-2xl border border-border bg-card shadow-sm hover:border-primary/40 transition-all space-y-4"
-            >
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-xs font-bold text-primary">
-                  {bm.historicalProjectCode}
-                </span>
-                <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-secondary text-secondary-foreground">
-                  {bm.discipline}
-                </span>
-              </div>
-
-              <div>
-                <h4 className="text-sm font-bold text-foreground">{bm.workType}</h4>
-              </div>
-
-              {/* Planned vs Actual Duration */}
-              <div className="grid grid-cols-2 gap-2 text-xs font-mono bg-muted/40 p-3 rounded-xl border border-border/60">
-                <div>
-                  <span className="text-[10px] text-muted-foreground block">Planned:</span>
-                  <span className="font-bold text-foreground">{bm.plannedDurationDays} Days</span>
-                </div>
-                <div>
-                  <span className="text-[10px] text-muted-foreground block">Actual:</span>
-                  <span className="font-bold text-foreground">{bm.actualDurationDays} Days</span>
-                </div>
-              </div>
-
-              {/* Variance Badge */}
-              <div className="flex items-center justify-between pt-1">
-                <span className="text-xs text-muted-foreground">Historical Variance:</span>
-                <span
-                  className={`px-2.5 py-1 rounded-full text-xs font-mono font-bold ${
-                    bm.variancePercentage > 15
-                      ? 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20'
-                      : bm.variancePercentage > 0
-                      ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20'
-                      : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
-                  }`}
-                >
-                  {bm.variancePercentage > 0 ? `+${bm.variancePercentage}%` : `${bm.variancePercentage}%`}
-                </span>
-              </div>
-
-              {/* Recorded Delays */}
-              <div className="space-y-1.5 pt-2 border-t border-border/60">
-                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide">
-                  Recorded Delay Incidents:
-                </span>
-                <div className="space-y-1">
-                  {bm.recordedDelays.map((del, idx) => (
-                    <div
-                      key={idx}
-                      className="text-xs text-muted-foreground flex items-start justify-between gap-2"
-                    >
-                      <span className="leading-tight">&bull; {del.cause}</span>
-                      {del.days > 0 && (
-                        <span className="font-mono text-red-600 dark:text-red-400 font-bold shrink-0">
-                          +{del.days}d
-                        </span>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </main>
-    </div>
-  );
+function MetricCard({ label, value, copy, icon, compact = false }: { label: string; value: string; copy: string; icon: React.ReactNode; compact?: boolean }) {
+  return <div className="p-5 rounded-2xl border border-border bg-card/60 shadow-sm space-y-2"><div className="flex items-center justify-between"><span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{label}</span><div className="p-2 rounded-xl bg-primary/10 text-primary">{icon}</div></div><div className={'font-extrabold text-foreground ' + (compact ? 'text-lg' : 'text-3xl')}>{value}</div><p className="text-xs text-muted-foreground">{copy}</p></div>;
 }

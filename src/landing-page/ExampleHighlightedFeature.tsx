@@ -6,7 +6,7 @@ export function AIReady() {
   return (
     <HighlightedFeature
       name="Causal Monotonic Reordering & Dynamic CPM Engine"
-      description="Frontline field engineers capture voice notes and DPR progress completely offline. When reconnected, Nirmaan Setu sorts updates by cryptographic hardware monotonic clocks and executes forward/backward passes to immediately alert planners to critical path slips before they cascade."
+      description="Field engineers capture text observations for their selected project. After sync, the workspace ranks activity candidates and recalculates the schedule when an update is accepted."
       highlightedComponent={<AIReadyExample />}
       direction="row-reverse"
     />
