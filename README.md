@@ -55,7 +55,7 @@ pnpm build
 | `/field-log` | Offline-first supervisor progress capture workflow |
 | `/knowledge-base` | Historical completed-project benchmarks |
 
-The portal’s interactive demonstration data is stored in browser local storage, so the documented core views are usable immediately after deployment. Connect the server actions in `src/app/actions/nirmaan.ts` to PostgreSQL for persistent multi-user data.
+All core views call the PostgreSQL-backed server actions in `src/app/actions/nirmaan.ts`. Schedule uploads, field reports, review decisions, CPM recalculations and Primavera exports are persisted and executed on the server; browser storage is used only for the offline field-capture outbox.
 
 ## Environment variables
 
@@ -82,6 +82,18 @@ vercel deploy --prebuilt
 ```
 
 Use `vercel deploy --prebuilt --prod` only after validating a preview deployment.
+
+## Deploy to Render (production backend)
+
+This repository includes a Render Blueprint at [`render.yaml`](render.yaml). It provisions a Starter web service and a PostgreSQL database, starts the Next.js API/backend, and probes `/api/health` only after PostgreSQL is reachable.
+
+1. Push the `nirmaan-next` directory to a Git repository.
+2. In Render, choose **New → Blueprint**, select that repository, and accept the generated `nirmaan-setu` web service and `nirmaan-setu-db` database.
+3. Deploy. The container applies the Prisma schema before it starts the web server; no browser-local mock mode is used.
+4. Open `https://YOUR-SERVICE.onrender.com/api/health`. It returns `{"status":"ok","database":"connected"}` when the backend is live.
+5. Upload a Primavera `.XER` or MS Project `.XML` schedule on `/projects`, then use `/field-log` to send progress into the reviewer/CPM pipeline.
+
+The Render plan covers the API and database. If you later enable cloud transcription or OCR, those providers require their own API credentials; the current field workflow captures voice and photos, preserves them offline, and submits the supervisor's text observation to the matching engine.
 
 ## Project structure
 

@@ -104,6 +104,26 @@ function validateInput<T>(args: any, name: string): T {
   return args as T;
 }
 
+/**
+ * Field capture is allowed before a supervisor has completed account setup.
+ * Keep the event attributable by creating one deterministic service identity
+ * instead of failing the whole offline-sync batch on a foreign-key error.
+ */
+async function ensureSupervisor(prisma: any, requestedId?: string) {
+  if (requestedId) {
+    const existing = await prisma.user.findUnique({ where: { id: requestedId } });
+    if (existing) return existing.id;
+  }
+
+  const email = 'field-supervisor@nirmaan-setu.local';
+  const supervisor = await prisma.user.upsert({
+    where: { email },
+    create: { email, username: 'Field Supervisor', role: 'SUPERVISOR', department: 'Project Controls' },
+    update: { role: 'SUPERVISOR' },
+  });
+  return supervisor.id;
+}
+
 // ==========================================
 // 1. UPLOAD & INGEST SCHEDULE BASELINE
 // ==========================================
@@ -285,6 +305,7 @@ export async function syncFieldEventsBatch(
   // Persist reconciled events
   for (const item of batchResult.processedItems) {
     const { event, match, proposedProgressDelta } = item;
+    const supervisorId = await ensureSupervisor(prisma, event.supervisorId);
 
     const fieldEvent = await prisma.fieldEvent.upsert({
       where: {
@@ -297,7 +318,7 @@ export async function syncFieldEventsBatch(
         projectId: args.projectId,
         clientEventId: event.clientEventId,
         deviceId: event.deviceId,
-        supervisorId: event.supervisorId,
+        supervisorId,
         sourceType: event.sourceType,
         rawText: event.rawText,
         audioRecordingUrl: event.audioRecordingUrl,
@@ -356,6 +377,12 @@ export async function syncFieldEventsBatch(
     }
   }
 
+  // Actuals change the network calculation; never leave schedule health stale
+  // after a successful sync batch.
+  if (batchResult.processedItems.length > 0) {
+    await triggerCPMRecalculation({ projectId: args.projectId }, context);
+  }
+
   return {
     reconciledCount: batchResult.reconciledEvents.length,
     autoMatchedCount: batchResult.autoMatchedCount,
@@ -410,8 +437,8 @@ export async function resolveReviewerItem(
       where: { id: finalActId },
       data: {
         percentComplete: Math.min(100, Math.max(existingAct?.percentComplete || 0, progress)),
-        actualStart: existingAct?.actualStart ?? new Date(),
-        actualFinish: progress >= 100 ? (existingAct?.actualFinish ?? new Date()) : undefined,
+        actualStart: existingAct?.actualStart ?? item.fieldEvent.eventTimestampHw,
+        actualFinish: progress >= 100 ? (existingAct?.actualFinish ?? item.fieldEvent.eventTimestampHw) : undefined,
       },
     });
 
