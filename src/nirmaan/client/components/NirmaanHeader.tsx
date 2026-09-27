@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useReviewerQueue } from '../operationsClient';
 import {
   HardHat,
@@ -10,6 +10,8 @@ import {
   AlertCircle,
   ExternalLink,
   ImageIcon,
+  Menu,
+  X,
 } from 'lucide-react';
 
 interface NirmaanHeaderProps {
@@ -19,6 +21,7 @@ interface NirmaanHeaderProps {
 
 export function NirmaanHeader({ currentTab, projectId }: NirmaanHeaderProps) {
   const { pendingCount } = useReviewerQueue();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navLinks = [
     {
@@ -101,10 +104,19 @@ export function NirmaanHeader({ currentTab, projectId }: NirmaanHeaderProps) {
                 Intelligent Field Data Capture & Dynamic CPM Schedule-Linking Layer
               </p>
             </div>
+            <button
+              type="button"
+              onClick={() => setIsMobileMenuOpen((open) => !open)}
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-workspace-navigation"
+              className="ml-auto inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-border bg-card text-foreground md:hidden"
+            >
+              <span className="sr-only">{isMobileMenuOpen ? 'Close menu' : 'Open menu'}</span>
+              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
           </div>
 
-          {/* Navigation Pill Tabs */}
-          <nav aria-label="Workspace navigation" className="-mx-4 flex items-center gap-1.5 overflow-x-auto px-4 pb-1 md:mx-0 md:px-0 md:pb-0 scrollbar-none">
+          <nav aria-label="Workspace navigation" className="hidden md:flex md:items-center md:gap-1.5">
             {navLinks.map((link) => {
               const Icon = link.icon;
               const isActive = currentTab === link.id;
@@ -136,6 +148,21 @@ export function NirmaanHeader({ currentTab, projectId }: NirmaanHeaderProps) {
             })}
           </nav>
         </div>
+        {isMobileMenuOpen && (
+          <nav id="mobile-workspace-navigation" aria-label="Mobile workspace navigation" className="mt-3 grid grid-cols-2 gap-2 border-t border-border pt-3 md:hidden">
+            {navLinks.map((link) => {
+              const Icon = link.icon;
+              const isActive = currentTab === link.id;
+              return (
+                <a key={link.id} href={link.href} onClick={() => setIsMobileMenuOpen(false)} className={`flex min-h-11 items-center gap-2 rounded-xl px-3 text-xs font-semibold ${isActive ? 'bg-primary text-primary-foreground' : 'bg-muted text-foreground'}`}>
+                  <Icon className="h-4 w-4 shrink-0" />
+                  <span className="min-w-0 truncate">{link.label}</span>
+                  {link.badge !== null && link.badge !== undefined && <span className="ml-auto rounded-full bg-destructive px-1.5 py-0.5 text-[10px] text-destructive-foreground">{link.badge}</span>}
+                </a>
+              );
+            })}
+          </nav>
+        )}
       </div>
     </header>
   );

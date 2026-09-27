@@ -156,9 +156,9 @@ export function ProjectsDashboardPage() {
         </div>
 
         {/* 4 High-Level KPI Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 min-[380px]:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {/* Card 1 */}
-          <div className="p-4 sm:p-5 rounded-xl border border-border bg-card/60 shadow-sm relative overflow-hidden">
+          <div className="min-w-0 p-4 sm:p-5 rounded-xl border border-border bg-card/60 shadow-sm relative overflow-hidden">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Active Projects
@@ -177,7 +177,7 @@ export function ProjectsDashboardPage() {
           </div>
 
           {/* Card 2 */}
-          <div className="p-4 sm:p-5 rounded-xl border border-border bg-card/60 shadow-sm relative overflow-hidden">
+          <div className="min-w-0 p-4 sm:p-5 rounded-xl border border-border bg-card/60 shadow-sm relative overflow-hidden">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Critical Path Slip
@@ -198,7 +198,7 @@ export function ProjectsDashboardPage() {
           </div>
 
           {/* Card 3 */}
-          <div className="p-4 sm:p-5 rounded-xl border border-border bg-card/60 shadow-sm relative overflow-hidden">
+          <div className="min-w-0 p-4 sm:p-5 rounded-xl border border-border bg-card/60 shadow-sm relative overflow-hidden">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Reviewer Queue
@@ -220,7 +220,7 @@ export function ProjectsDashboardPage() {
           </div>
 
           {/* Card 4 */}
-          <div className="p-4 sm:p-5 rounded-xl border border-border bg-card/60 shadow-sm relative overflow-hidden">
+          <div className="min-w-0 p-4 sm:p-5 rounded-xl border border-border bg-card/60 shadow-sm relative overflow-hidden">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Causal Field Logs
