@@ -109,15 +109,15 @@ export function ProjectsDashboardPage() {
     <div className="min-h-screen bg-background">
       <NirmaanHeader currentTab="projects" />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8">
         {/* Top Title & Action Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground">
-              Projects Portfolio & Health Cockpit
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+              Project controls
             </h2>
             <p className="text-sm text-muted-foreground mt-1">
-              Upload a schedule baseline, review submitted progress observations, and monitor calculated CPM health.
+              Review the link between site observations, planned activities, and the current CPM forecast.
             </p>
           </div>
           <button
@@ -125,7 +125,7 @@ export function ProjectsDashboardPage() {
               setUploadResult(null);
               setIsUploadModalOpen(true);
             }}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-primary-foreground font-semibold text-sm hover:opacity-95 shadow-md shadow-primary/20 transition-all cursor-pointer"
+            className="inline-flex min-h-11 w-full sm:w-auto justify-center items-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-primary-foreground font-semibold text-sm hover:opacity-95 shadow-md shadow-primary/20 transition-all cursor-pointer"
           >
             <Upload className="w-4 h-4" />
             Upload Baseline Schedule (.XER / .XML)
@@ -133,9 +133,9 @@ export function ProjectsDashboardPage() {
         </div>
 
         {/* 4 High-Level KPI Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {/* Card 1 */}
-          <div className="p-5 rounded-xl border border-border bg-card/60 shadow-sm relative overflow-hidden">
+          <div className="p-4 sm:p-5 rounded-xl border border-border bg-card/60 shadow-sm relative overflow-hidden">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Active Projects
@@ -145,8 +145,8 @@ export function ProjectsDashboardPage() {
               </div>
             </div>
             <div className="mt-3">
-              <div className="text-3xl font-extrabold text-foreground">{totalProjects}</div>
-              <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+              <div className="text-2xl sm:text-3xl font-extrabold text-foreground">{totalProjects}</div>
+              <p className="hidden sm:flex text-xs text-muted-foreground mt-1 items-center gap-1">
                 <Building2 className="w-3.5 h-3.5 text-emerald-500" />
                 Capital assets under tracking
               </p>
@@ -154,7 +154,7 @@ export function ProjectsDashboardPage() {
           </div>
 
           {/* Card 2 */}
-          <div className="p-5 rounded-xl border border-border bg-card/60 shadow-sm relative overflow-hidden">
+          <div className="p-4 sm:p-5 rounded-xl border border-border bg-card/60 shadow-sm relative overflow-hidden">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Critical Path Slip
@@ -164,10 +164,10 @@ export function ProjectsDashboardPage() {
               </div>
             </div>
             <div className="mt-3">
-              <div className="text-3xl font-extrabold text-red-600 dark:text-red-400">
+              <div className="text-2xl sm:text-3xl font-extrabold text-red-600 dark:text-red-400">
                 +{maxCriticalPathSlip.toFixed(1)}d
               </div>
-              <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1 font-mono">
+              <p className="hidden sm:flex text-xs text-muted-foreground mt-1 items-center gap-1 font-mono">
                 <span className="w-2 h-2 rounded-full bg-red-500 inline-block" />
                 {mostDelayedProject?.criticalPathDelayDays ? `${mostDelayedProject.code} has the highest recorded variance` : 'No schedule variance recorded yet'}
               </p>
@@ -175,7 +175,7 @@ export function ProjectsDashboardPage() {
           </div>
 
           {/* Card 3 */}
-          <div className="p-5 rounded-xl border border-border bg-card/60 shadow-sm relative overflow-hidden">
+          <div className="p-4 sm:p-5 rounded-xl border border-border bg-card/60 shadow-sm relative overflow-hidden">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Reviewer Queue
@@ -185,7 +185,7 @@ export function ProjectsDashboardPage() {
               </div>
             </div>
             <div className="mt-3">
-              <div className="text-3xl font-extrabold text-amber-600 dark:text-amber-400">
+              <div className="text-2xl sm:text-3xl font-extrabold text-amber-600 dark:text-amber-400">
                 {pendingCount}
               </div>
               <p className="text-xs text-muted-foreground mt-1">
@@ -197,7 +197,7 @@ export function ProjectsDashboardPage() {
           </div>
 
           {/* Card 4 */}
-          <div className="p-5 rounded-xl border border-border bg-card/60 shadow-sm relative overflow-hidden">
+          <div className="p-4 sm:p-5 rounded-xl border border-border bg-card/60 shadow-sm relative overflow-hidden">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Causal Field Logs
@@ -207,8 +207,8 @@ export function ProjectsDashboardPage() {
               </div>
             </div>
             <div className="mt-3">
-              <div className="text-3xl font-extrabold text-foreground">{totalFieldEvents}</div>
-              <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+              <div className="text-2xl sm:text-3xl font-extrabold text-foreground">{totalFieldEvents}</div>
+              <p className="hidden sm:flex text-xs text-muted-foreground mt-1 items-center gap-1">
                 Field observations received by this workspace
               </p>
             </div>
@@ -216,7 +216,7 @@ export function ProjectsDashboardPage() {
         </div>
 
         {/* Filter and Search Bar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-xl border border-border bg-card/40">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl border border-border bg-card/40">
           <div className="relative w-full sm:w-80">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input
@@ -224,17 +224,17 @@ export function ProjectsDashboardPage() {
               placeholder="Search project code or name..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/40"
+              className="min-h-11 w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/40"
             />
           </div>
 
-          <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto">
-            <span className="text-xs text-muted-foreground whitespace-nowrap">Filter Status:</span>
+          <div className="flex items-center gap-2 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
+            <span className="hidden sm:inline text-xs text-muted-foreground whitespace-nowrap">Filter Status:</span>
             {(['ALL', 'GREEN', 'AMBER', 'RED'] as const).map((status) => (
               <button
                 key={status}
                 onClick={() => setStatusFilter(status)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                className={`min-h-11 shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                   statusFilter === status
                     ? 'bg-primary text-primary-foreground font-semibold shadow-xs'
                     : 'bg-muted text-muted-foreground hover:text-foreground'
@@ -252,8 +252,61 @@ export function ProjectsDashboardPage() {
           </div>
         </div>
 
-        {/* Projects Table */}
-        <div className="rounded-xl border border-border bg-card/60 shadow-sm overflow-hidden">
+        {/* Mobile project cards keep the schedule summary readable without table scrolling. */}
+        <div className="space-y-3 md:hidden">
+          {!isLoading && filteredProjects.length === 0 && (
+            <div className="rounded-xl border border-border bg-card/60 px-5 py-10 text-center">
+              <p className="font-semibold text-foreground">No project baselines yet</p>
+              <p className="mt-1 text-xs text-muted-foreground">Upload a Primavera XER or MS Project XML baseline to start the schedule workflow.</p>
+            </div>
+          )}
+          {filteredProjects.map((project) => (
+            <article key={project.id} className="rounded-xl border border-border bg-card/60 p-4 shadow-sm">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <h3 className="font-semibold text-foreground leading-snug">{project.name}</h3>
+                  <p className="mt-1 font-mono text-xs font-medium text-primary">{project.code}</p>
+                </div>
+                <span className={`shrink-0 rounded px-2 py-1 text-[11px] font-semibold border ${
+                  project.status === 'RED'
+                    ? 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20'
+                    : project.status === 'AMBER'
+                    ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+                    : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+                }`}>
+                  {project.status === 'RED' ? 'Slip breached' : project.status === 'AMBER' ? 'Attention' : 'On track'}
+                </span>
+              </div>
+              <dl className="mt-4 grid grid-cols-2 gap-x-3 gap-y-3 border-y border-border py-3 text-xs">
+                <div>
+                  <dt className="text-muted-foreground">Baseline finish</dt>
+                  <dd className="mt-1 font-mono font-medium text-foreground">{new Date(project.plannedFinishDate).toLocaleDateString()}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted-foreground">Forecast finish</dt>
+                  <dd className="mt-1 font-mono font-medium text-foreground">{new Date(project.currentForecastFinishDate).toLocaleDateString()}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted-foreground">Critical path</dt>
+                  <dd className={`mt-1 font-mono font-bold ${project.criticalPathDelayDays > 0 ? 'text-red-600 dark:text-red-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
+                    {project.criticalPathDelayDays > 0 ? `+${project.criticalPathDelayDays.toFixed(1)} days` : 'On time'}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-muted-foreground">Activity evidence</dt>
+                  <dd className="mt-1 font-mono font-medium text-foreground">{project.activitiesCount} tasks, {project.fieldEventsCount} logs</dd>
+                </div>
+              </dl>
+              <a href={`/projects/${project.id}`} className="mt-3 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-secondary px-3 text-sm font-semibold text-secondary-foreground transition-colors hover:bg-primary hover:text-primary-foreground">
+                View CPM schedule
+                <ArrowRight className="h-4 w-4" />
+              </a>
+            </article>
+          ))}
+        </div>
+
+        {/* Desktop schedule table */}
+        <div className="hidden md:block rounded-xl border border-border bg-card/60 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead className="bg-muted/50 border-b border-border text-xs uppercase font-semibold text-muted-foreground">
@@ -342,11 +395,11 @@ export function ProjectsDashboardPage() {
 
         {/* Upload Baseline Modal */}
         {isUploadModalOpen && (
-          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-            <div className="bg-card border border-border rounded-2xl w-full max-w-xl shadow-2xl p-6 relative animate-in fade-in zoom-in-95 duration-200">
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center sm:p-4">
+            <div className="max-h-[92dvh] w-full max-w-xl overflow-y-auto rounded-t-2xl sm:rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-2xl relative animate-in fade-in zoom-in-95 duration-200">
               <button
                 onClick={() => setIsUploadModalOpen(false)}
-                className="absolute right-4 top-4 p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted"
+                className="absolute right-3 top-3 inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -377,7 +430,7 @@ export function ProjectsDashboardPage() {
                       placeholder="e.g. OIL-ASSAM-PL-2026"
                       value={uploadCodeOverride}
                       onChange={(e) => setUploadCodeOverride(e.target.value)}
-                      className="w-full px-3 py-2 text-sm rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/40 font-mono"
+                      className="min-h-11 w-full px-3 py-2 text-sm rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/40 font-mono"
                     />
                   </div>
 
@@ -390,7 +443,7 @@ export function ProjectsDashboardPage() {
                       <button
                         type="button"
                         onClick={() => setUploadFileType('XER')}
-                        className={`py-2 px-3 text-xs font-medium rounded-lg border transition-all ${
+                        className={`min-h-11 py-2 px-3 text-xs font-medium rounded-lg border transition-all ${
                           uploadFileType === 'XER'
                             ? 'border-primary bg-primary/10 text-primary font-bold'
                             : 'border-border text-muted-foreground hover:bg-muted'
@@ -401,7 +454,7 @@ export function ProjectsDashboardPage() {
                       <button
                         type="button"
                         onClick={() => setUploadFileType('XML')}
-                        className={`py-2 px-3 text-xs font-medium rounded-lg border transition-all ${
+                        className={`min-h-11 py-2 px-3 text-xs font-medium rounded-lg border transition-all ${
                           uploadFileType === 'XML'
                             ? 'border-primary bg-primary/10 text-primary font-bold'
                             : 'border-border text-muted-foreground hover:bg-muted'
@@ -413,7 +466,7 @@ export function ProjectsDashboardPage() {
                   </div>
 
                   {/* File Selector Dropzone */}
-                  <div className="border-2 border-dashed border-border rounded-xl p-6 text-center hover:border-primary/50 transition-colors">
+                  <div className="border-2 border-dashed border-border rounded-xl p-5 sm:p-6 text-center hover:border-primary/50 transition-colors">
                     <input
                       type="file"
                       id="baseline-file-input"
@@ -423,7 +476,7 @@ export function ProjectsDashboardPage() {
                     />
                     <label
                       htmlFor="baseline-file-input"
-                      className="cursor-pointer flex flex-col items-center justify-center gap-2"
+                      className="min-h-28 cursor-pointer flex flex-col items-center justify-center gap-2"
                     >
                       <FileText className="w-8 h-8 text-primary/70" />
                       <div className="text-sm font-medium text-foreground">
@@ -441,7 +494,7 @@ export function ProjectsDashboardPage() {
                     <button
                       type="button"
                       onClick={handleLoadSampleXER}
-                      className="inline-flex items-center gap-1.5 text-primary hover:underline font-semibold cursor-pointer"
+                      className="inline-flex min-h-11 items-center gap-1.5 text-primary hover:underline font-semibold cursor-pointer"
                     >
                       <Sparkles className="w-3.5 h-3.5" />
                       Load sample pipeline baseline
@@ -449,11 +502,11 @@ export function ProjectsDashboardPage() {
                   </div>
 
                   {/* Footer Actions */}
-                  <div className="pt-4 border-t border-border flex justify-end gap-2">
+                  <div className="pt-4 border-t border-border flex flex-col-reverse sm:flex-row justify-end gap-2">
                     <button
                       type="button"
                       onClick={() => setIsUploadModalOpen(false)}
-                      className="px-4 py-2 text-xs font-semibold rounded-lg text-muted-foreground hover:bg-muted cursor-pointer"
+                      className="min-h-11 w-full sm:w-auto px-4 py-2 text-xs font-semibold rounded-lg text-muted-foreground hover:bg-muted cursor-pointer"
                     >
                       Cancel
                     </button>
@@ -461,7 +514,7 @@ export function ProjectsDashboardPage() {
                       type="button"
                       disabled={isUploading}
                       onClick={handleExecuteUpload}
-                      className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-50 cursor-pointer shadow-sm"
+                      className="inline-flex min-h-11 w-full sm:w-auto justify-center items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-50 cursor-pointer shadow-sm"
                     >
                       {isUploading && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                       Parse & Calculate Baseline CPM
@@ -488,7 +541,7 @@ export function ProjectsDashboardPage() {
                   <div className="pt-4 border-t border-border flex justify-end gap-2">
                     <button
                       onClick={() => setIsUploadModalOpen(false)}
-                      className="px-4 py-2 text-xs font-semibold rounded-lg bg-primary text-primary-foreground hover:opacity-90 cursor-pointer"
+                      className="min-h-11 w-full sm:w-auto px-4 py-2 text-xs font-semibold rounded-lg bg-primary text-primary-foreground hover:opacity-90 cursor-pointer"
                     >
                       Done & View Portfolio
                     </button>

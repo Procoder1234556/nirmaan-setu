@@ -61,17 +61,17 @@ export function NirmaanHeader({ currentTab, projectId }: NirmaanHeaderProps) {
   ];
 
   return (
-    <header className="border-b border-border/80 bg-card/60 backdrop-blur-md sticky top-0 z-30 transition-all">
+    <header className="sticky top-0 z-30 border-b border-black/8 bg-background/90 backdrop-blur-md transition-all">
       {/* Top Enterprise Ribbon */}
-      <div className="border-b border-border/40 bg-muted/40 px-4 py-1.5 text-xs text-muted-foreground flex flex-wrap items-center justify-between gap-2">
+      <div className="border-b border-black/6 bg-white/45 px-4 py-1.5 text-xs text-muted-foreground flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center px-1.5 py-0.5 rounded font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+          <span className="inline-flex items-center px-2 py-0.5 rounded-full font-semibold bg-[#e6f8d1] text-[#43711e] border border-[#cdebad]">
             SIH26122 · OIL INDIA LIMITED
           </span>
           <span className="hidden sm:inline text-muted-foreground/60">|</span>
           <span className="hidden sm:inline font-mono">Infrastructure project controls workspace</span>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="hidden sm:flex items-center gap-3">
           <span className="flex items-center gap-1 font-mono">Schedule data is updated from submitted field logs</span>
           <span className="text-muted-foreground/60">|</span>
           <span className="font-semibold text-foreground">Project controls</span>
@@ -82,29 +82,29 @@ export function NirmaanHeader({ currentTab, projectId }: NirmaanHeaderProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500 via-orange-600 to-red-600 flex items-center justify-center text-white shadow-md shadow-orange-500/20">
+            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-primary-foreground shadow-sm">
               <HardHat className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
+                <h1 className="text-lg sm:text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
                   Nirmaan Setu
                   <span className="text-sm font-normal text-muted-foreground font-serif">
                     (निर्माण सेतु)
                   </span>
                 </h1>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                <span className="hidden sm:inline text-xs px-2 py-0.5 rounded-full bg-[#e6f8d1] text-[#43711e] font-medium">
                   Schedule workspace
                 </span>
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="hidden sm:block text-xs text-muted-foreground">
                 Intelligent Field Data Capture & Dynamic CPM Schedule-Linking Layer
               </p>
             </div>
           </div>
 
           {/* Navigation Pill Tabs */}
-          <nav className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
+          <nav aria-label="Workspace navigation" className="-mx-4 flex items-center gap-1.5 overflow-x-auto px-4 pb-1 md:mx-0 md:px-0 md:pb-0 scrollbar-none">
             {navLinks.map((link) => {
               const Icon = link.icon;
               const isActive = currentTab === link.id;
@@ -112,7 +112,7 @@ export function NirmaanHeader({ currentTab, projectId }: NirmaanHeaderProps) {
                 <a
                   key={link.id}
                   href={link.href}
-                  className={`flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-md whitespace-nowrap transition-colors ${
+                  className={`flex min-h-11 shrink-0 items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-md whitespace-nowrap transition-colors ${
                     isActive
                       ? 'bg-primary text-primary-foreground shadow-sm'
                       : 'text-muted-foreground hover:text-foreground hover:bg-accent'
