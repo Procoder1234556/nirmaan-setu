@@ -9,10 +9,11 @@ import {
   Calendar,
   AlertCircle,
   ExternalLink,
+  ImageIcon,
 } from 'lucide-react';
 
 interface NirmaanHeaderProps {
-  currentTab: 'projects' | 'details' | 'queue' | 'field-log' | 'knowledge-base';
+  currentTab: 'projects' | 'details' | 'queue' | 'field-log' | 'knowledge-base' | 'evidence';
   projectId?: string;
 }
 
@@ -44,6 +45,12 @@ export function NirmaanHeader({ currentTab, projectId }: NirmaanHeaderProps) {
       label: 'Field Logger PWA',
       href: '/field-log',
       icon: Mic,
+    },
+    {
+      id: 'evidence',
+      label: 'Admin Evidence',
+      href: '/evidence',
+      icon: ImageIcon,
     },
     {
       id: 'knowledge-base',

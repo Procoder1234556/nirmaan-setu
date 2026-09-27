@@ -1,0 +1,12 @@
+{
+  "name": "Nirmaan Setu Field Logger",
+  "short_name": "Nirmaan Setu",
+  "description": "Offline-first field evidence and construction-risk intelligence.",
+  "start_url": "/field-log",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#002244",
+  "icons": [
+    { "src": "/favicon.ico", "sizes": "any", "type": "image/x-icon" }
+  ]
+}

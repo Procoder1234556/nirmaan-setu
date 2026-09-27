@@ -51,6 +51,7 @@ export function ProjectDetailsPage(props: any) {
 
   // Project delay prediction summary
   const prediction = predictions[0];
+  const predictedLoss = prediction ? Math.round(prediction.criticalPathSlipDays * 240000) : 0;
 
   // Handle Recalculate CPM
   const handleRecalculateCPM = async () => {
@@ -191,6 +192,23 @@ export function ProjectDetailsPage(props: any) {
             </div>
 
             {/* Root Cause Analysis */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="rounded-xl border border-red-500/15 bg-card/70 p-3">
+                <p className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">Possible loss exposure</p>
+                <p className="font-mono text-lg font-extrabold text-red-600 dark:text-red-400 mt-1">₹{predictedLoss.toLocaleString('en-IN')}</p>
+                <p className="text-[10px] text-muted-foreground">Based on critical-path delay cost rate</p>
+              </div>
+              <div className="rounded-xl border border-amber-500/15 bg-card/70 p-3">
+                <p className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">Likely failure point</p>
+                <p className="text-xs font-bold text-foreground mt-1">{prediction.affectedMilestoneName}</p>
+                <p className="text-[10px] text-muted-foreground">Lowest float dependency at risk</p>
+              </div>
+              <div className="rounded-xl border border-primary/15 bg-card/70 p-3">
+                <p className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">Confidence signal</p>
+                <p className="text-xs font-bold text-foreground mt-1">Field evidence + CPM + history</p>
+                <p className="text-[10px] text-muted-foreground">Recalculated from synchronized actuals</p>
+              </div>
+            </div>
             <div className="text-xs space-y-1">
               <span className="font-semibold text-foreground uppercase tracking-wide text-[11px]">
                 Primary Root Cause (Causal Event Ingestion):
