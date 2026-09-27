@@ -4,6 +4,7 @@ import { generatePrimaveraXER } from './parsers/xerExporter';
 import { calculateCPM } from './cpm/cpmEngine';
 import { processFieldEventsBatch } from './sync/causalSync';
 import { formatActivityEmbeddingText } from './matching/semanticMatcher';
+import { refineMatchWithGroq } from './ai/groqMatcher';
 import type {
   CPMActivityInput,
   CPMDependencyInput,
@@ -324,6 +325,12 @@ export async function syncFieldEventsBatch(
   // In-process causal reordering & semantic match
   const batchResult = processFieldEventsBatch(args.events as RawFieldEventInput[], candidates);
 
+  // Refine only against known project activity IDs. The deterministic matcher remains
+  // the safe fallback when Groq is unavailable or returns an invalid response.
+  for (const item of batchResult.processedItems) {
+    item.match = await refineMatchWithGroq(item.event.rawText, candidates, item.match);
+  }
+
   // Persist reconciled events
   for (const item of batchResult.processedItems) {
     const { event, match, proposedProgressDelta } = item;
@@ -407,9 +414,9 @@ export async function syncFieldEventsBatch(
 
   return {
     reconciledCount: batchResult.reconciledEvents.length,
-    autoMatchedCount: batchResult.autoMatchedCount,
-    pendingReviewCount: batchResult.pendingReviewCount,
-    unmatchedCount: batchResult.unmatchedCount,
+    autoMatchedCount: batchResult.processedItems.filter((item) => item.match.status === 'AUTO_MATCHED').length,
+    pendingReviewCount: batchResult.processedItems.filter((item) => item.match.status === 'PENDING_REVIEW').length,
+    unmatchedCount: batchResult.processedItems.filter((item) => item.match.status === 'UNMATCHED').length,
     tamperedClockCount: batchResult.tamperedClockCount,
   };
 }
