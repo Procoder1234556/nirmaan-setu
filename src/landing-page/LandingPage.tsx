@@ -1,32 +1,53 @@
-import { ExamplesCarousel } from "./components/ExamplesCarousel";
-import { FAQ } from "./components/FAQ";
-import { FeaturesGrid } from "./components/FeaturesGrid";
-import { Footer } from "./components/Footer";
-import { Hero } from "./components/Hero";
-import { SchemaMarkup } from "./components/SchemaMarkup";
-import { Testimonials } from "./components/Testimonials";
-import {
-  examples,
-  faqs,
-  features,
-  footerNavigation,
-  testimonials,
-} from "./contentSections";
-import { AIReady } from "./ExampleHighlightedFeature";
+import Link from "next/link";
+
+const constructionImage = "https://images.unsplash.com/photo-1632201147654-f6f54427e538?auto=format&fit=crop&fm=jpg&q=85&w=1800";
+const crewImage = "https://images.unsplash.com/photo-1747056711958-9d8c3b97b578?auto=format&fit=crop&fm=jpg&q=85&w=1400";
+
+const steps = [
+  ["01", "Capture from the field", "Turn site notes, photos, quantities and delays into structured updates—online or offline."],
+  ["02", "See the schedule move", "Link every field event to its activity, dependency and milestone in the CPM plan."],
+  ["03", "Act before it slips", "Give project leaders an auditable view of risk, progress and the next best action."],
+];
+
+const outcomes = [
+  "Field notes that reach the planning team the same day",
+  "Photo-backed evidence for every critical update",
+  "Early warnings when milestone dependencies are at risk",
+];
 
 export function LandingPage() {
   return (
-    <div className="bg-background text-foreground">
-      <SchemaMarkup />
-      <main className="isolate">
-        <Hero />
-        <ExamplesCarousel examples={examples} />
-        <AIReady />
-        <FeaturesGrid features={features} />
-        <Testimonials testimonials={testimonials} />
-        <FAQ faqs={faqs} />
+    <div className="min-h-screen overflow-hidden bg-[#f8f4d9] text-[#1b2119] selection:bg-[#d8eba8] selection:text-[#1b2119]">
+      <main className="mx-auto max-w-[1440px] px-4 pb-5 pt-4 sm:px-6 lg:px-10">
+        <nav className="flex items-center justify-between rounded-full border border-[#1b2119]/15 bg-[#fffdeb]/80 px-4 py-3 backdrop-blur sm:px-6">
+          <Link href="/" className="flex items-center gap-2 font-semibold tracking-[-0.04em]"><span className="grid h-8 w-8 place-items-center rounded-full bg-[#0c493c] font-serif text-lg text-[#f8f4d9]">N</span><span>Nirmaan Setu</span></Link>
+          <div className="hidden items-center gap-6 text-sm text-[#4f574a] md:flex"><a href="#how-it-works" className="transition hover:text-[#0c493c]">How it works</a><a href="#outcomes" className="transition hover:text-[#0c493c]">Outcomes</a><a href="#field-ready" className="transition hover:text-[#0c493c]">Field-ready</a></div>
+          <Link href="/login" className="rounded-full bg-[#0c493c] px-4 py-2 text-sm font-medium text-[#f8f4d9] transition hover:bg-[#153a30]">Sign in</Link>
+        </nav>
+
+        <section className="px-2 pb-12 pt-16 text-center sm:px-8 sm:pt-24">
+          <p className="mb-5 text-xs font-bold uppercase tracking-[0.2em] text-[#246d57]">Built for capital projects</p>
+          <h1 className="mx-auto max-w-5xl font-serif text-5xl leading-[0.94] tracking-[-0.065em] text-[#22251e] sm:text-7xl lg:text-[6.8rem]">Keep every site decision <em className="font-normal text-[#1e765c]">on schedule.</em></h1>
+          <p className="mx-auto mt-7 max-w-2xl text-base leading-7 text-[#505747] sm:text-lg">Nirmaan Setu connects field intelligence to dynamic CPM schedules, so Oil India project teams can move from daily observations to confident action.</p>
+          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row"><Link href="/signup" className="rounded-full bg-[#0c493c] px-6 py-3 text-sm font-semibold text-[#f8f4d9] transition hover:-translate-y-0.5 hover:bg-[#153a30]">Start a project workspace</Link><a href="#how-it-works" className="rounded-full border border-[#1b2119]/30 bg-transparent px-6 py-3 text-sm font-semibold transition hover:bg-[#fffdeb]">Explore the workflow</a></div>
+        </section>
+
+        <section className="relative overflow-hidden rounded-[2rem] bg-[#111612] px-5 pb-0 pt-7 text-[#f9f5d9] sm:px-10 sm:pt-10 lg:min-h-[570px]">
+          <div className="relative z-10 max-w-xl"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#b9d69c]">One shared project pulse</p><h2 className="mt-4 font-serif text-4xl leading-none tracking-[-0.045em] sm:text-6xl">From field signal to schedule certainty.</h2><p className="mt-5 max-w-md text-sm leading-6 text-[#d1d6bd] sm:text-base">A calm, connected command layer for the reality of live construction: work fronts, evidence, approvals and dependencies.</p></div>
+          <div className="relative z-10 mt-8 grid max-w-xl grid-cols-3 gap-2 rounded-2xl border border-white/10 bg-white/5 p-3 backdrop-blur sm:absolute sm:right-8 sm:top-12 sm:mt-0 sm:w-[430px]">{[["Work fronts", "18 active"], ["Evidence", "42 new"], ["Schedule", "On track"]].map(([label, value]) => <div key={label} className="rounded-xl bg-[#f8f4d9] p-3 text-[#182119]"><p className="text-[10px] uppercase tracking-wider text-[#5e695a]">{label}</p><p className="mt-4 font-serif text-lg leading-none">{value}</p></div>)}</div>
+          <div className="relative mt-7 h-64 overflow-hidden rounded-t-[1.5rem] sm:absolute sm:bottom-0 sm:left-8 sm:right-8 sm:mt-0 sm:h-[290px]"><img src={constructionImage} alt="Construction crew at an active building site" className="h-full w-full object-cover object-center opacity-75" /><div className="absolute inset-0 bg-gradient-to-t from-[#111612] via-transparent to-transparent" /><div className="absolute bottom-5 left-5 rounded-2xl border border-white/15 bg-[#111612]/85 px-4 py-3 backdrop-blur"><p className="text-xs text-[#b9d69c]">Today&apos;s progress</p><p className="mt-1 font-serif text-xl">Foundation package · 78%</p></div></div>
+        </section>
+
+        <section id="outcomes" className="grid gap-8 px-2 py-20 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-end lg:py-28"><div><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#246d57]">Built around the work</p><h2 className="mt-4 max-w-md font-serif text-5xl leading-[0.98] tracking-[-0.055em] sm:text-6xl">Clarity that keeps work moving.</h2></div><div className="space-y-4 border-t border-[#1b2119]/20 pt-5">{outcomes.map((outcome, index) => <div key={outcome} className="flex gap-5"><span className="font-serif text-2xl text-[#b85b2b]">0{index + 1}</span><p className="pt-1 text-lg leading-7 text-[#424a3e]">{outcome}</p></div>)}</div></section>
+
+        <section id="how-it-works" className="rounded-[2rem] bg-[#d9c1ef] px-5 py-10 sm:px-10 sm:py-14"><div className="max-w-2xl"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#5f3d77]">A connected workflow</p><h2 className="mt-4 font-serif text-4xl leading-none tracking-[-0.05em] sm:text-6xl">The work is complex. Your next step shouldn&apos;t be.</h2></div><div className="mt-10 grid gap-4 md:grid-cols-3">{steps.map(([number, title, copy]) => <article key={number} className="rounded-2xl bg-[#fffdeb]/75 p-6"><span className="font-serif text-2xl text-[#7e438b]">{number}</span><h3 className="mt-10 font-serif text-2xl tracking-[-0.035em]">{title}</h3><p className="mt-3 text-sm leading-6 text-[#4a4e44]">{copy}</p></article>)}</div></section>
+
+        <section id="field-ready" className="grid gap-8 px-2 py-20 sm:px-8 lg:grid-cols-2 lg:py-28"><div className="relative min-h-[410px] overflow-hidden rounded-[2rem] bg-[#274f42]"><img src={crewImage} alt="Workers coordinating at a construction site" className="absolute inset-0 h-full w-full object-cover opacity-70" /><div className="absolute inset-0 bg-gradient-to-t from-[#10271f] via-[#10271f]/10 to-transparent" /><div className="absolute bottom-0 p-7 text-[#f8f4d9]"><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#c6e3a9]">Made for the field</p><p className="mt-3 max-w-sm font-serif text-3xl leading-none tracking-[-0.04em]">Evidence stays connected to the work, even when the network does not.</p></div></div><div className="flex flex-col justify-center lg:px-10"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#246d57]">For every role on site</p><h2 className="mt-4 font-serif text-5xl leading-[0.95] tracking-[-0.055em] sm:text-6xl">A better handoff starts here.</h2><p className="mt-6 max-w-md text-base leading-7 text-[#505747]">Supervisors record what happened. Engineers understand its impact. Project leaders get the decision trail they need—without chasing spreadsheets.</p><div className="mt-8 flex flex-wrap gap-2">{["Offline field capture", "Photo & document evidence", "CPM activity linking", "Role-based views"].map((item) => <span key={item} className="rounded-full border border-[#1b2119]/20 px-3 py-2 text-xs font-medium">{item}</span>)}</div></div></section>
+
+        <section className="rounded-[2rem] bg-[#111612] px-6 py-12 text-center text-[#f8f4d9] sm:px-10 sm:py-16"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#b9d69c]">Bring the site closer</p><h2 className="mx-auto mt-4 max-w-3xl font-serif text-5xl leading-[0.94] tracking-[-0.06em] sm:text-7xl">Build with the whole picture in view.</h2><p className="mx-auto mt-6 max-w-xl text-sm leading-6 text-[#d1d6bd]">Nirmaan Setu turns field data into project confidence—from first observation to final handover.</p><Link href="/signup" className="mt-8 inline-block rounded-full bg-[#d8eba8] px-6 py-3 text-sm font-semibold text-[#18342b] transition hover:bg-[#ebf7c7]">Create your workspace</Link></section>
+
+        <footer className="flex flex-col gap-5 px-3 pb-4 pt-10 text-xs text-[#667060] sm:flex-row sm:items-end sm:justify-between"><div><p className="font-serif text-2xl text-[#1b2119]">Nirmaan Setu</p><p className="mt-1">Project intelligence for work that matters.</p></div><p>Construction photography from <a className="underline underline-offset-2" href="https://unsplash.com" target="_blank" rel="noreferrer">Unsplash</a>.</p></footer>
       </main>
-      <Footer footerNavigation={footerNavigation} />
     </div>
   );
 }
