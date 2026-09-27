@@ -61,7 +61,7 @@ export async function uploadScheduleBaseline(args: { fileContent: string; fileTy
 export async function bootstrapJudgingDemo() { return bootstrapJudgingDemoAction(); }
 export async function triggerCPMRecalculation(args: { projectId: string }) { return triggerCPMRecalculationAction(args); }
 export async function exportPrimaveraXER(args: { projectId: string }) { return exportPrimaveraXERAction(args); }
-export async function syncFieldEventsBatch(args: { projectId: string; events: Array<{ clientEventId: string; deviceId: string; supervisorId?: string; sourceType: 'MOBILE_VOICE' | 'MOBILE_FORM' | 'EXCEL_DPR'; rawText: string; eventTimestampHw: string; monotonicSeq: number; }>; }) {
+export async function syncFieldEventsBatch(args: { projectId: string; events: Array<{ clientEventId: string; deviceId: string; supervisorId?: string; sourceType: 'MOBILE_VOICE' | 'MOBILE_FORM' | 'EXCEL_DPR'; rawText: string; audioRecordingUrl?: string; eventTimestampHw: string; monotonicSeq: number; }>; }) {
   return syncFieldEventsBatchAction({ ...args, events: args.events.map((event) => ({ ...event, supervisorId: event.supervisorId || SYSTEM_SUPERVISOR_ID })) });
 }
 export function useHistoricalBenchmarks(disciplineFilter?: string) {

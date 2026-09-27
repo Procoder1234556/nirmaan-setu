@@ -10,7 +10,7 @@ Built with Next.js App Router, React, TypeScript, Tailwind CSS, Prisma, Radix UI
 - Primavera P6 `.XER` and MS Project `.XML` baseline upload flow
 - Project CPM and Gantt detail view
 - Confidence-routed reviewer queue for ambiguous field events
-- Offline-first field-log simulation with monotonic sequence handling
+- Offline-first field-log capture with monotonic sequence handling and voice-to-text notes
 - Historical benchmark knowledge base
 - In-process TypeScript CPM, schedule parsing, semantic matching, causal sync, and Primavera export modules
 
@@ -63,9 +63,12 @@ The core demonstration routes do not require secrets. For database-backed server
 
 ```dotenv
 DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/nirmaan_setu?schema=public"
+GROQ_API_KEY=""
 ```
 
-Never commit `.env`, `.env.local`, database credentials, or Vercel environment files. Add only variables required by enabled integrations; legacy payment, analytics, and file-upload integrations are not required for the Nirmaan Setu core portal.
+`GROQ_API_KEY` is required for AI-assisted activity matching and `/field-log` voice transcription. It is used only in server routes and server actions; never expose it as a `NEXT_PUBLIC_*` value or commit it. Without it, the deterministic matching fallback remains available, while transcription clearly reports that it has not been configured.
+
+Never commit `.env`, `.env.local`, database credentials, API keys, or Vercel environment files. Add only variables required by enabled integrations; legacy payment, analytics, and file-upload integrations are not required for the Nirmaan Setu core portal.
 
 ## Deploy to Vercel
 
@@ -89,11 +92,12 @@ This repository includes a Render Blueprint at [`render.yaml`](render.yaml). It 
 
 1. Push the `nirmaan-next` directory to a Git repository.
 2. In Render, choose **New → Blueprint**, select that repository, and accept the generated `nirmaan-setu` web service and `nirmaan-setu-db` database.
-3. Deploy. The container applies the Prisma schema before it starts the web server; no browser-local mock mode is used.
-4. Open `https://YOUR-SERVICE.onrender.com/api/health`. It returns `{"status":"ok","database":"connected"}` when the backend is live.
-5. Upload a Primavera `.XER` or MS Project `.XML` schedule on `/projects`, then use `/field-log` to send progress into the reviewer/CPM pipeline.
+3. Set `GROQ_API_KEY` in the Render web service's Environment settings, then deploy. The Blueprint deliberately marks this as a non-synced secret, so its value is never stored in Git.
+4. The container applies the Prisma schema before it starts the web server; no browser-local mock mode is used.
+5. Open `https://YOUR-SERVICE.onrender.com/api/health`. It returns `{"status":"ok","database":"connected"}` when the backend is live.
+6. For the live judging path, select **Load judging demo** on `/projects`, record or type a field observation in `/field-log`, sync it, review low-confidence matches in `/reviewer-queue`, then open the project Gantt to show the resulting schedule impact.
 
-The Render plan covers the API and database. If you later enable cloud transcription or OCR, those providers require their own API credentials; the current field workflow captures voice and photos, preserves them offline, and submits the supervisor's text observation to the matching engine.
+The Render plan covers the API and database. Groq provides the optional server-side transcription and constrained semantic activity matching. Photo and voice evidence is retained with the queued field event; spreadsheet and scanned-document ingestion remain future extension paths.
 
 ## Project structure
 
