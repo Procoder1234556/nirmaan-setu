@@ -16,6 +16,10 @@ export async function uploadScheduleBaselineAction(args: UploadBaselineInput) {
   return await ops.uploadScheduleBaseline(args, serverContext);
 }
 
+export async function bootstrapJudgingDemoAction() {
+  return await ops.bootstrapJudgingDemo(serverContext);
+}
+
 export async function getProjectsAction() {
   return await ops.getProjects({}, serverContext);
 }

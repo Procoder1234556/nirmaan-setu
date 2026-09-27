@@ -3,6 +3,7 @@ import { NirmaanHeader } from '../components/NirmaanHeader';
 import {
   useProjects,
   useReviewerQueue,
+  bootstrapJudgingDemo,
   uploadScheduleBaseline,
 } from '../operationsClient';
 import {
@@ -27,6 +28,7 @@ export function ProjectsDashboardPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<'ALL' | 'GREEN' | 'AMBER' | 'RED'>('ALL');
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [isBootstrappingDemo, setIsBootstrappingDemo] = useState(false);
 
   // Upload modal form state
   const [uploadCodeOverride, setUploadCodeOverride] = useState('');
@@ -84,6 +86,18 @@ export function ProjectsDashboardPage() {
 %E`);
   };
 
+  const handleBootstrapDemo = async () => {
+    setIsBootstrappingDemo(true);
+    try {
+      await bootstrapJudgingDemo();
+      await refetch();
+    } catch (cause) {
+      alert(cause instanceof Error ? cause.message : 'Unable to create the judging demo project.');
+    } finally {
+      setIsBootstrappingDemo(false);
+    }
+  };
+
   const handleExecuteUpload = async () => {
     if (!uploadFileContent) {
       alert('Please select a .XER or .XML schedule file or load sample.');
@@ -120,6 +134,14 @@ export function ProjectsDashboardPage() {
               Review the link between site observations, planned activities, and the current CPM forecast.
             </p>
           </div>
+          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+          <button
+            onClick={handleBootstrapDemo}
+            disabled={isBootstrappingDemo}
+            className="inline-flex min-h-11 w-full sm:w-auto justify-center items-center gap-2 px-4 py-2.5 rounded-lg border border-border bg-card text-foreground font-semibold text-sm hover:bg-muted disabled:opacity-50 transition-all cursor-pointer"
+          >
+            {isBootstrappingDemo ? 'Preparing demo…' : 'Load judging demo'}
+          </button>
           <button
             onClick={() => {
               setUploadResult(null);
@@ -130,6 +152,7 @@ export function ProjectsDashboardPage() {
             <Upload className="w-4 h-4" />
             Upload Baseline Schedule (.XER / .XML)
           </button>
+          </div>
         </div>
 
         {/* 4 High-Level KPI Cards */}

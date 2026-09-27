@@ -48,6 +48,14 @@ export interface ExportXERInput {
   projectId: string;
 }
 
+const JUDGING_DEMO_CODE = 'OIL-DEMO-PIPELINE-2026';
+const JUDGING_DEMO_XML = `<?xml version="1.0" encoding="UTF-8"?>
+<Project><Title>Oil India Pipeline Demonstration</Title><Tasks>
+<Task><UID>10</UID><Name>Right of Way Clearance Line 24</Name><WBS>Pipeline > Civil</WBS><Start>2026-10-01T08:00:00</Start><Finish>2026-10-05T17:00:00</Finish><PercentComplete>100</PercentComplete></Task>
+<Task><UID>20</UID><Name>Erect Spool Line 24-XX</Name><WBS>Pipeline > Piping</WBS><Start>2026-10-06T08:00:00</Start><Finish>2026-10-12T17:00:00</Finish><PercentComplete>0</PercentComplete><PredecessorLink><PredecessorUID>10</PredecessorUID><Type>1</Type></PredecessorLink></Task>
+<Task><UID>30</UID><Name>Hydrotest Line 24-XX</Name><WBS>Pipeline > Piping</WBS><Start>2026-10-13T08:00:00</Start><Finish>2026-10-17T17:00:00</Finish><PercentComplete>0</PercentComplete><PredecessorLink><PredecessorUID>20</PredecessorUID><Type>1</Type></PredecessorLink></Task>
+</Tasks></Project>`;
+
 // Dynamic import or fallback for wasp/server / prisma
 let prismaClient: any = null;
 async function getPrismaClient(context?: any) {
@@ -271,6 +279,20 @@ export async function uploadScheduleBaseline(
     criticalPathActivitiesCount: cpmResult.criticalPath.length,
     criticalPathSlipDays: cpmResult.criticalPathSlipDays,
   };
+}
+
+/** Creates the repeatable, judge-facing pipeline scenario without sample IDs in the client. */
+export async function bootstrapJudgingDemo(context: any) {
+  const prisma = await getPrismaClient(context);
+  const existing = await prisma.project.findUnique({ where: { code: JUDGING_DEMO_CODE } });
+  if (existing) return { projectId: existing.id, created: false };
+
+  const uploaded = await uploadScheduleBaseline({
+    fileContent: JUDGING_DEMO_XML,
+    fileType: 'XML',
+    projectCodeOverride: JUDGING_DEMO_CODE,
+  }, context);
+  return { projectId: uploaded.projectId, created: true };
 }
 
 // ==========================================

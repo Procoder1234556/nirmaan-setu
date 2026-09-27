@@ -3,6 +3,7 @@
 /** Browser client for the persisted Nirmaan Setu backend. */
 import { useCallback, useEffect, useState } from 'react';
 import {
+  bootstrapJudgingDemoAction,
   exportPrimaveraXERAction, getHistoricalBenchmarksAction, getProjectDetailsAction,
   getProjectsAction, getReviewerQueueAction, resolveReviewerItemAction,
   syncFieldEventsBatchAction, triggerCPMRecalculationAction, uploadScheduleBaselineAction,
@@ -57,6 +58,7 @@ export function useReviewerQueue() {
 
 export async function resolveReviewerItem(args: { queueItemId: string; resolution: 'APPROVED' | 'REASSIGNED' | 'SPLIT' | 'DISMISSED'; finalActivityId?: string; progressDeltaPercent?: number; }) { return resolveReviewerItemAction(args); }
 export async function uploadScheduleBaseline(args: { fileContent: string; fileType?: 'XER' | 'XML'; projectCodeOverride?: string; }) { return uploadScheduleBaselineAction(args); }
+export async function bootstrapJudgingDemo() { return bootstrapJudgingDemoAction(); }
 export async function triggerCPMRecalculation(args: { projectId: string }) { return triggerCPMRecalculationAction(args); }
 export async function exportPrimaveraXER(args: { projectId: string }) { return exportPrimaveraXERAction(args); }
 export async function syncFieldEventsBatch(args: { projectId: string; events: Array<{ clientEventId: string; deviceId: string; supervisorId?: string; sourceType: 'MOBILE_VOICE' | 'MOBILE_FORM' | 'EXCEL_DPR'; rawText: string; eventTimestampHw: string; monotonicSeq: number; }>; }) {
