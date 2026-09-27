@@ -1,0 +1,270 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                        String          @id @default(uuid())
+  createdAt                 DateTime        @default(now())
+
+  email                     String?         @unique
+  username                  String?         @unique
+  isAdmin                   Boolean         @default(false)
+
+  paymentProcessorUserId    String?         @unique
+  lemonSqueezyCustomerPortalUrl String?     // You can delete this if you're not using Lemon Squeezy as your payments processor.
+  subscriptionStatus        String?         // 'active', 'cancel_at_period_end', 'past_due', 'deleted'
+  subscriptionPlan          String?         // 'hobby', 'pro'
+  datePaid                  DateTime?
+  credits                   Int             @default(3)
+
+  role                          String          @default("PLANNER") // 'SUPERVISOR', 'PLANNER', 'EXECUTIVE', 'ADMIN'
+  department                    String?         // 'Piping', 'Civil', 'Electrical', 'Project Controls'
+
+  // Nirmaan Setu Relations
+  fieldEvents                   FieldEvent[]
+  reviewedItems                 ReviewerQueueItem[]
+
+  gptResponses              GptResponse[]
+  contactFormMessages       ContactFormMessage[]
+  tasks                     Task[]
+  files                     File[]
+}
+
+model GptResponse {
+  id                        String          @id @default(uuid())
+  createdAt                 DateTime        @default(now())
+  updatedAt                 DateTime        @updatedAt
+
+  user                      User            @relation(fields: [userId], references: [id])
+  userId                    String
+
+  content                   String
+}
+
+model Task {
+  id                        String          @id @default(uuid())
+  createdAt                 DateTime        @default(now())
+
+  user                      User            @relation(fields: [userId], references: [id])
+  userId                    String
+
+  description               String
+  time                      String          @default("1")
+  isDone                    Boolean         @default(false)
+}
+
+model File {
+  id                        String          @id @default(uuid())
+  createdAt                 DateTime        @default(now())
+
+  user                      User            @relation(fields: [userId], references: [id])
+  userId                    String
+
+  name                      String
+  type                      String
+  s3Key                     String
+}
+
+model DailyStats {
+  id                               Int             @id @default(autoincrement())
+  date                             DateTime        @default(now()) @unique
+
+  totalViews                       Int             @default(0)
+  prevDayViewsChangePercent        String          @default("0")
+  userCount                        Int             @default(0)
+  paidUserCount                    Int             @default(0)
+  userDelta                        Int             @default(0)
+  paidUserDelta                    Int             @default(0)
+  totalRevenue                     Float           @default(0)
+  totalProfit                      Float           @default(0)
+
+  sources                          PageViewSource[]
+}
+
+model PageViewSource {
+  @@id([date, name])
+  name                     String
+  date                     DateTime        @default(now())
+
+  dailyStats               DailyStats?     @relation(fields: [dailyStatsId], references: [id])
+  dailyStatsId             Int?
+
+  visitors                 Int
+}
+
+model Logs {
+  id                       Int             @id @default(autoincrement())
+  createdAt                DateTime        @default(now())
+
+  message                  String
+  level                    String
+}
+
+model ContactFormMessage {
+  id                        String          @id @default(uuid())
+  createdAt                 DateTime        @default(now())
+
+  user                      User            @relation(fields: [userId], references: [id])
+  userId                    String
+
+  content                   String
+  isRead                    Boolean         @default(false)
+  repliedAt                 DateTime?
+}
+
+// ==========================================
+// NIRMAAN SETU DOMAIN MODELS
+// ==========================================
+
+model Project {
+  id                          String                @id @default(uuid())
+  code                        String                @unique // e.g. 'OIL-ASSAM-PL-2026'
+  name                        String
+  description                 String?
+  plannedStartDate            DateTime
+  plannedFinishDate           DateTime
+  currentForecastFinishDate   DateTime?
+  criticalPathDelayDays       Float                 @default(0.0)
+  createdAt                   DateTime              @default(now())
+  updatedAt                   DateTime              @updatedAt
+
+  activities                  BaselineActivity[]
+  dependencies                ActivityDependency[]
+  fieldEvents                 FieldEvent[]
+  delayPredictions            DelayPrediction[]
+}
+
+model BaselineActivity {
+  id                          String                @id @default(uuid())
+  project                     Project               @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId                   String
+
+  activityCode                String                // e.g. 'ACT-1092-XX'
+  name                        String
+  wbsPath                     String                // e.g. 'Pipeline > Unit 02 > Piping'
+  discipline                  String                // 'Piping', 'Civil', 'Electrical', 'Instrumentation'
+  plannedDurationDays         Float
+  plannedStart                DateTime
+  plannedFinish               DateTime
+  actualStart                 DateTime?
+  actualFinish                DateTime?
+  percentComplete             Float                 @default(0.0)
+  totalFloatDays              Float                 @default(0.0)
+  freeFloatDays               Float                 @default(0.0)
+  isCriticalPath              Boolean               @default(false)
+  
+  // Stored vector string or queryable via raw SQL pgvector
+  embeddingText               String?               @db.Text 
+  
+  createdAt                   DateTime              @default(now())
+  updatedAt                   DateTime              @updatedAt
+
+  predecessors                ActivityDependency[]  @relation("SuccessorRelation")
+  successors                  ActivityDependency[]  @relation("PredecessorRelation")
+  matchedEvents               FieldEvent[]
+  reviewerCandidates          ReviewerQueueItem[]   @relation("CandidateRelation")
+  resolvedItems               ReviewerQueueItem[]   @relation("ResolvedRelation")
+
+  @@unique([projectId, activityCode])
+  @@index([projectId, isCriticalPath])
+}
+
+model ActivityDependency {
+  id                          String                @id @default(uuid())
+  project                     Project               @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId                   String
+
+  predecessor                 BaselineActivity      @relation("PredecessorRelation", fields: [predecessorId], references: [id], onDelete: Cascade)
+  predecessorId               String
+
+  successor                   BaselineActivity      @relation("SuccessorRelation", fields: [successorId], references: [id], onDelete: Cascade)
+  successorId                 String
+
+  dependencyType              String                @default("FS") // 'FS', 'SS', 'FF', 'SF'
+  lagDays                     Float                 @default(0.0)
+
+  @@unique([predecessorId, successorId])
+}
+
+model FieldEvent {
+  id                          String                @id @default(uuid())
+  project                     Project               @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId                   String
+
+  clientEventId               String                // Generated by mobile client
+  deviceId                    String
+  supervisor                  User                  @relation(fields: [supervisorId], references: [id])
+  supervisorId                String
+
+  sourceType                  String                // 'MOBILE_VOICE', 'MOBILE_FORM', 'EXCEL_DPR'
+  rawText                     String                @db.Text
+  audioRecordingUrl           String?
+  eventTimestampHw            DateTime              // Monotonic hardware clock
+  monotonicSeq                BigInt                // Device counter
+  syncReceivedAt              DateTime              @default(now())
+  reconciledCausalOrder       BigInt?
+
+  matchedActivity             BaselineActivity?     @relation(fields: [matchedActivityId], references: [id])
+  matchedActivityId           String?
+  matchConfidence             Float?
+  status                      String                @default("PENDING_MATCH") // 'AUTO_MATCHED', 'PENDING_REVIEW', 'MANUALLY_MATCHED', 'REJECTED'
+
+  reviewerItem                ReviewerQueueItem?
+
+  @@unique([deviceId, clientEventId])
+  @@index([projectId, eventTimestampHw])
+}
+
+model ReviewerQueueItem {
+  id                          String                @id @default(uuid())
+  fieldEvent                  FieldEvent            @relation(fields: [fieldEventId], references: [id], onDelete: Cascade)
+  fieldEventId                String                @unique
+
+  topCandidate                BaselineActivity      @relation("CandidateRelation", fields: [topCandidateId], references: [id])
+  topCandidateId              String
+
+  candidateSimilarityScore    Float
+  alternateCandidates         Json?                 // [{activityId, score, name, code}]
+  matchRationale              String?               @db.Text
+
+  reviewer                    User?                 @relation(fields: [reviewedById], references: [id])
+  reviewedById                String?
+
+  resolution                  String?               // 'APPROVED', 'REASSIGNED', 'SPLIT', 'DISMISSED'
+  finalActivity               BaselineActivity?     @relation("ResolvedRelation", fields: [finalActivityId], references: [id])
+  finalActivityId             String?
+  progressDeltaPercent        Float?
+  resolvedAt                  DateTime?
+  createdAt                   DateTime              @default(now())
+}
+
+model DelayPrediction {
+  id                          String                @id @default(uuid())
+  project                     Project               @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId                   String
+
+  criticalPathSlipDays        Float
+  affectedMilestoneName       String
+  predictedMilestoneDate      DateTime
+  varianceFromBaselineDays    Float
+  primaryRootCause            String                @db.Text
+  mitigationRecommendations   Json                  // [{strategy, recoveredDays, costImpact}]
+  createdAt                   DateTime              @default(now())
+}
+
+model ClosedProjectBenchmark {
+  id                          String                @id @default(uuid())
+  historicalProjectCode       String
+  discipline                  String
+  workType                    String
+  plannedDurationDays         Float
+  actualDurationDays          Float
+  variancePercentage          Float
+  recordedDelays              Json                  // [{cause: string, days: number}]
+  createdAt                   DateTime              @default(now())
+}
