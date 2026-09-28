@@ -1,5 +1,8 @@
-const CACHE = 'nirmaan-setu-shell-v3';
-const SHELL = ['/field-log', '/projects', '/reviewer-queue', '/manifest.webmanifest'];
+// Do not cache Next.js document responses. Their HTML contains build-hashed
+// scripts that Render replaces on every deployment; serving an old document
+// after a deploy causes blank pages and 404s for those stale assets.
+const CACHE = 'nirmaan-setu-runtime-v4';
+const SHELL = ['/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(SHELL)));
@@ -20,15 +23,8 @@ self.addEventListener('fetch', (event) => {
   if (url.origin !== self.location.origin || url.pathname.startsWith('/_next/') || url.pathname === '/sw.js') return;
 
   if (event.request.mode === 'navigate') {
-    event.respondWith(
-      fetch(event.request)
-        .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE).then((cache) => cache.put(event.request, copy));
-          return response;
-        })
-        .catch(() => caches.match(event.request).then((cached) => cached || caches.match('/field-log'))),
-    );
+    // Always fetch fresh route HTML so it references the current Next build.
+    event.respondWith(fetch(event.request));
     return;
   }
 
