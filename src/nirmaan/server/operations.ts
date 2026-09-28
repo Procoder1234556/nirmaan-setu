@@ -687,7 +687,11 @@ export async function getProjectDetails(rawArgs: { projectId: string }, context:
     },
   });
 
-  if (!project) throwHttpError(404, 'Project not found');
+  // A project can disappear between a client navigation and its Server Action
+  // request (for example, after a baseline is replaced). Returning null lets
+  // the UI present a recoverable unavailable-project state without turning a
+  // stale link into a 500 error.
+  if (!project) return null;
   return project;
 }
 

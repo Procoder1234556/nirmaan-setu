@@ -45,9 +45,21 @@ export function useProjects() {
 export function useProjectDetails(projectId: string) {
   const [project, setProject] = useState<MockProject | null>(null); const [activities, setActivities] = useState<MockActivity[]>([]);
   const [predictions, setPredictions] = useState<MockDelayPrediction[]>([]);
-  const reload = useCallback(async () => { if (!projectId) return; const details: any = await getProjectDetailsAction({ projectId });
-    setProject(asProject(details)); setActivities((details.activities || []).map(asActivity)); setPredictions((details.delayPredictions || []).map(asPrediction)); }, [projectId]);
-  useEffect(() => { void reload().catch(() => undefined); }, [reload]); return { project, activities, predictions, refetch: reload };
+  const [isLoading, setIsLoading] = useState(true); const [notFound, setNotFound] = useState(false);
+  const reload = useCallback(async () => {
+    if (!projectId) { setIsLoading(false); return; }
+    setIsLoading(true);
+    try {
+      const details: any = await getProjectDetailsAction({ projectId });
+      if (!details) {
+        setProject(null); setActivities([]); setPredictions([]); setNotFound(true);
+        return;
+      }
+      setProject(asProject(details)); setActivities((details.activities || []).map(asActivity)); setPredictions((details.delayPredictions || []).map(asPrediction)); setNotFound(false);
+    } finally { setIsLoading(false); }
+  }, [projectId]);
+  useEffect(() => { void reload().catch(() => { setIsLoading(false); }); }, [reload]);
+  return { project, activities, predictions, isLoading, notFound, refetch: reload };
 }
 
 export function useReviewerQueue() {

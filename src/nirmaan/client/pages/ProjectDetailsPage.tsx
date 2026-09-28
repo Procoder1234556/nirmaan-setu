@@ -31,7 +31,7 @@ export function ProjectDetailsPage(props: any) {
     props?.params?.projectId ||
     '';
 
-  const { project, activities, predictions, refetch } = useProjectDetails(projectId);
+  const { project, activities, predictions, isLoading, notFound, refetch } = useProjectDetails(projectId);
 
   const [selectedDiscipline, setSelectedDiscipline] = useState<string>('ALL');
   const [showCriticalOnly, setShowCriticalOnly] = useState<boolean>(false);
@@ -114,6 +114,17 @@ export function ProjectDetailsPage(props: any) {
   return (
     <div className="min-h-screen bg-background">
       <NirmaanHeader currentTab="details" projectId={projectId} />
+
+      {notFound && !isLoading ? (
+        <main className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
+          <section className="rounded-2xl border border-border bg-card p-8 shadow-sm">
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">Project controls</p>
+            <h2 className="mt-3 text-2xl font-bold tracking-tight text-foreground">This project is no longer available.</h2>
+            <p className="mt-3 text-sm leading-6 text-muted-foreground">The schedule may have been replaced or this link may be out of date. Return to the portfolio to select an active project.</p>
+            <a href="/projects" className="mt-6 inline-flex rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">Back to Projects Portfolio</a>
+          </section>
+        </main>
+      ) : (
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         {/* Back Button & Project Header */}
@@ -472,6 +483,7 @@ export function ProjectDetailsPage(props: any) {
           </div>
         )}
       </main>
+      )}
     </div>
   );
 }
