@@ -1,43 +1,41 @@
-const CACHE = 'nirmaan-setu-shell-v3';
-const SHELL = ['/field-log', '/projects', '/reviewer-queue', '/manifest.webmanifest'];
+/**
+ * Retired portal shell worker — cleanup only.
+ *
+ * The previous Next.js portal shell registered this file and cached
+ * `/field-log`, `/projects` and `/reviewer-queue` with a cache-first strategy.
+ * The product UI is now the legacy Nirmaan Setu static frontend in `public/`,
+ * which ships its own offline shell (`ns-sw.js`).
+ *
+ * This file is intentionally kept (do not delete it): a service worker update
+ * check that returns 404 leaves the old worker installed forever. Instead, it
+ * now deletes the retired caches, unregisters itself and reloads open clients
+ * once, so browsers that already installed the portal shell self-heal.
+ */
+const RETIRED_CACHE_PREFIXES = ['nirmaan-setu-shell-'];
 
-self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(SHELL)));
+self.addEventListener('install', () => {
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys()
-      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key))))
-      .then(() => self.clients.claim()),
+    (async () => {
+      const keys = await caches.keys();
+      await Promise.all(
+        keys
+          .filter((key) => RETIRED_CACHE_PREFIXES.some((prefix) => key.startsWith(prefix)))
+          .map((key) => caches.delete(key)),
+      );
+
+      await self.registration.unregister();
+
+      const clients = await self.clients.matchAll({ type: 'window' });
+      for (const client of clients) {
+        client.navigate(client.url).catch(() => undefined);
+      }
+    })(),
   );
 });
 
-self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
-  const url = new URL(event.request.url);
-  if (url.origin !== self.location.origin || url.pathname.startsWith('/_next/') || url.pathname === '/sw.js') return;
-
-  if (event.request.mode === 'navigate') {
-    event.respondWith(
-      fetch(event.request)
-        .then((response) => {
-          const copy = response.clone();
-          caches.open(CACHE).then((cache) => cache.put(event.request, copy));
-          return response;
-        })
-        .catch(() => caches.match(event.request).then((cached) => cached || caches.match('/field-log'))),
-    );
-    return;
-  }
-
-  event.respondWith(caches.match(event.request).then((cached) => cached || fetch(event.request)
-    .then((response) => {
-      if (!response.ok) return response;
-      const copy = response.clone();
-      caches.open(CACHE).then((cache) => cache.put(event.request, copy));
-      return response;
-    })
-    .catch(() => caches.match('/field-log'))));
-});
+// While this worker is still in control, never serve anything from a cache.
+self.addEventListener('fetch', () => {});
