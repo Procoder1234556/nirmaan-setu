@@ -62,10 +62,27 @@ export function ProjectsDashboardPage() {
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    const extension = file.name.split('.').pop()?.toLowerCase();
+    if (extension !== 'xer' && extension !== 'xml') {
+      alert('Please select a Primavera P6 .XER file or an MS Project .XML file.');
+      e.target.value = '';
+      return;
+    }
+
+    // Keep the selected parser aligned with the file the user actually chose.
+    // Previously XML files were still sent to the default XER parser unless the
+    // user manually changed the format button first.
+    setUploadFileType(extension === 'xml' ? 'XML' : 'XER');
     setUploadFileName(file.name);
     const reader = new FileReader();
     reader.onload = (event) => {
       setUploadFileContent(event.target?.result as string || '');
+    };
+    reader.onerror = () => {
+      setUploadFileContent('');
+      setUploadFileName('');
+      alert(`Unable to read ${file.name}. Please try selecting the file again.`);
     };
     reader.readAsText(file);
   };
@@ -508,7 +525,7 @@ export function ProjectsDashboardPage() {
                         {uploadFileName ? uploadFileName : 'Choose .XER or .XML schedule file'}
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        Drag and drop or click to browse from workstation
+                        Click to browse. The format is detected from the selected file.
                       </div>
                     </label>
                   </div>

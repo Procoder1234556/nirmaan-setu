@@ -136,6 +136,12 @@ export interface RawFieldEventInput {
   sourceType: 'MOBILE_VOICE' | 'MOBILE_FORM' | 'EXCEL_DPR';
   rawText: string;
   audioRecordingUrl?: string | null;
+  location?: {
+    latitude: number;
+    longitude: number;
+    accuracyMeters: number;
+    capturedAt: Date | string;
+  };
   eventTimestampHw: Date | string;
   monotonicSeq: number | bigint | string;
 }

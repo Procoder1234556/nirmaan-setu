@@ -7,6 +7,13 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   serverExternalPackages: ['@prisma/client', 'prisma'],
+  // Schedule exports regularly exceed Next's 1 MB Server Action default.
+  // The client sends the selected XER/XML text to the ingestion action.
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '20mb',
+    },
+  },
 };
 
 export default nextConfig;

@@ -119,6 +119,7 @@ export function reconcileFieldEventsCausally(
       sourceType: item.sourceType,
       rawText: item.rawText,
       audioRecordingUrl: item.audioRecordingUrl,
+      location: item.location,
       eventTimestampHw: item.eventTimestampHw,
       monotonicSeq: item.monotonicSeq,
       reconciledCausalOrder: currentOrder,

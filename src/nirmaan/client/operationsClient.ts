@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import {
   bootstrapJudgingDemoAction,
   exportPrimaveraXERAction, getHistoricalBenchmarksAction, getProjectDetailsAction,
-  getProjectsAction, getReviewerQueueAction, resolveReviewerItemAction,
+  getFieldWorkerHistoryAction, getProjectsAction, getReviewerQueueAction, resolveReviewerItemAction,
   syncFieldEventsBatchAction, triggerCPMRecalculationAction, uploadScheduleBaselineAction,
 } from '@/app/actions/nirmaan';
 import type { MockActivity, MockBenchmark, MockDelayPrediction, MockProject, MockReviewerItem } from './mockData';
@@ -68,12 +68,19 @@ export function useReviewerQueue() {
   useEffect(() => { void reload().catch(() => undefined); }, [reload]); return { items, allItemsCount: items.length, pendingCount: items.length, isLoading, refetch: reload };
 }
 
-export async function resolveReviewerItem(args: { queueItemId: string; resolution: 'APPROVED' | 'REASSIGNED' | 'SPLIT' | 'DISMISSED'; finalActivityId?: string; progressDeltaPercent?: number; }) { return resolveReviewerItemAction(args); }
+export function useFieldWorkerHistory() {
+  const [items, setItems] = useState<any[]>([]); const [isLoading, setIsLoading] = useState(true);
+  const reload = useCallback(async () => { setIsLoading(true); try { setItems(await getFieldWorkerHistoryAction()); } finally { setIsLoading(false); } }, []);
+  useEffect(() => { void reload().catch(() => setItems([])); }, [reload]);
+  return { items, isLoading, refetch: reload };
+}
+
+export async function resolveReviewerItem(args: { queueItemId: string; resolution: 'APPROVED' | 'REASSIGNED' | 'SPLIT' | 'DISMISSED'; finalActivityId?: string; progressDeltaPercent?: number; managerRemark?: string; }) { return resolveReviewerItemAction(args); }
 export async function uploadScheduleBaseline(args: { fileContent: string; fileType?: 'XER' | 'XML'; projectCodeOverride?: string; }) { return uploadScheduleBaselineAction(args); }
 export async function bootstrapJudgingDemo() { return bootstrapJudgingDemoAction(); }
 export async function triggerCPMRecalculation(args: { projectId: string }) { return triggerCPMRecalculationAction(args); }
 export async function exportPrimaveraXER(args: { projectId: string }) { return exportPrimaveraXERAction(args); }
-export async function syncFieldEventsBatch(args: { projectId: string; events: Array<{ clientEventId: string; deviceId: string; supervisorId?: string; sourceType: 'MOBILE_VOICE' | 'MOBILE_FORM' | 'EXCEL_DPR'; rawText: string; audioRecordingUrl?: string; eventTimestampHw: string; monotonicSeq: number; }>; }) {
+export async function syncFieldEventsBatch(args: { projectId: string; events: Array<{ clientEventId: string; deviceId: string; supervisorId?: string; sourceType: 'MOBILE_VOICE' | 'MOBILE_FORM' | 'EXCEL_DPR'; rawText: string; audioRecordingUrl?: string; location: { latitude: number; longitude: number; accuracyMeters: number; capturedAt: string }; eventTimestampHw: string; monotonicSeq: number; }>; }) {
   return syncFieldEventsBatchAction({ ...args, events: args.events.map((event) => ({ ...event, supervisorId: event.supervisorId || SYSTEM_SUPERVISOR_ID })) });
 }
 export function useHistoricalBenchmarks(disciplineFilter?: string) {

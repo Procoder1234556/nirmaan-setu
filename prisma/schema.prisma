@@ -205,6 +205,10 @@ model FieldEvent {
   rawText                     String                @db.Text
   audioRecordingUrl           String?
   eventTimestampHw            DateTime              // Monotonic hardware clock
+  latitude                    Float?
+  longitude                   Float?
+  locationAccuracyMeters      Float?
+  locationCapturedAt          DateTime?
   monotonicSeq                BigInt                // Device counter
   syncReceivedAt              DateTime              @default(now())
   reconciledCausalOrder       BigInt?

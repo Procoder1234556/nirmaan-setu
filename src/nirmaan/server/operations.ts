@@ -28,6 +28,12 @@ export interface SyncFieldEventsInput {
     sourceType: 'MOBILE_VOICE' | 'MOBILE_FORM' | 'EXCEL_DPR';
     rawText: string;
     audioRecordingUrl?: string | null;
+    location: {
+      latitude: number;
+      longitude: number;
+      accuracyMeters: number;
+      capturedAt: string | Date;
+    };
     eventTimestampHw: string | Date;
     monotonicSeq: number | string | bigint;
   }>;
@@ -39,6 +45,7 @@ export interface ResolveReviewerInput {
   finalActivityId?: string;
   progressDeltaPercent?: number;
   reviewerUserId?: string;
+  managerRemark?: string;
 }
 
 export interface TriggerCPMInput {
@@ -133,6 +140,21 @@ async function ensureSupervisor(prisma: any, requestedId?: string) {
   return supervisor.id;
 }
 
+async function ensureReviewer(prisma: any, requestedId?: string) {
+  if (requestedId) {
+    const existing = await prisma.user.findUnique({ where: { id: requestedId } });
+    if (existing) return existing.id;
+  }
+
+  const email = 'project-controls-manager@nirmaan-setu.local';
+  const reviewer = await prisma.user.upsert({
+    where: { email },
+    create: { email, username: 'Project Controls Manager', role: 'ADMIN', department: 'Project Controls' },
+    update: { role: 'ADMIN' },
+  });
+  return reviewer.id;
+}
+
 // ==========================================
 // 1. UPLOAD & INGEST SCHEDULE BASELINE
 // ==========================================
@@ -144,13 +166,23 @@ export async function uploadScheduleBaseline(
   if (!args.fileContent || typeof args.fileContent !== 'string') {
     throwHttpError(400, 'fileContent must be a valid non-empty string');
   }
-  const fileType = args.fileType === 'XML' ? 'XML' : 'XER';
+  if (args.fileType !== undefined && args.fileType !== 'XER' && args.fileType !== 'XML') {
+    throwHttpError(400, 'Unsupported schedule format. Upload a .XER or .XML file.');
+  }
+  const fileType = args.fileType ?? 'XER';
   const prisma = await getPrismaClient(context);
 
   // Parse using in-process TS parsers
   const parsed = fileType === 'XML'
     ? parseMSProjectXML(args.fileContent)
     : parsePrimaveraXER(args.fileContent);
+
+  if (parsed.activities.length === 0) {
+    throwHttpError(
+      400,
+      `No activities were found in this ${fileType} file. Confirm that it is an exported ${fileType === 'XER' ? 'Primavera P6 XER' : 'MS Project XML'} schedule, then try again.`
+    );
+  }
 
   const projCode = args.projectCodeOverride || parsed.project.code;
 
@@ -306,6 +338,12 @@ export async function syncFieldEventsBatch(
   const args = validateInput<SyncFieldEventsInput>(rawArgs, 'syncFieldEventsBatch');
   if (!args.projectId) throwHttpError(400, 'projectId is required');
   if (!Array.isArray(args.events)) throwHttpError(400, 'events must be an array');
+  for (const event of args.events) {
+    const location = event.location;
+    if (!location || !Number.isFinite(location.latitude) || !Number.isFinite(location.longitude) || !Number.isFinite(location.accuracyMeters) || Math.abs(location.latitude) > 90 || Math.abs(location.longitude) > 180 || Number.isNaN(new Date(location.capturedAt).getTime())) {
+      throwHttpError(400, 'Every field log must include a valid timestamp and current GPS location.');
+    }
+  }
   const prisma = await getPrismaClient(context);
 
   // Load project's candidate activities
@@ -334,6 +372,7 @@ export async function syncFieldEventsBatch(
   // Persist reconciled events
   for (const item of batchResult.processedItems) {
     const { event, match, proposedProgressDelta } = item;
+    const location = event.location!;
     const supervisorId = await ensureSupervisor(prisma, event.supervisorId);
 
     const fieldEvent = await prisma.fieldEvent.upsert({
@@ -352,6 +391,10 @@ export async function syncFieldEventsBatch(
         rawText: event.rawText,
         audioRecordingUrl: event.audioRecordingUrl,
         eventTimestampHw: new Date(event.eventTimestampHw),
+        latitude: location.latitude,
+        longitude: location.longitude,
+        locationAccuracyMeters: location.accuracyMeters,
+        locationCapturedAt: new Date(location.capturedAt),
         monotonicSeq: BigInt(event.monotonicSeq.toString()),
         reconciledCausalOrder: event.reconciledCausalOrder,
         matchedActivityId: match.topCandidate?.id,
@@ -444,6 +487,7 @@ export async function resolveReviewerItem(
 
   const finalActId = args.finalActivityId || item.topCandidateId;
   const progress = args.progressDeltaPercent ?? item.progressDeltaPercent ?? 100;
+  const reviewerId = await ensureReviewer(prisma, args.reviewerUserId || context?.user?.id);
 
   // Update item
   const resolved = await prisma.reviewerQueueItem.update({
@@ -452,8 +496,9 @@ export async function resolveReviewerItem(
       resolution: args.resolution,
       finalActivityId: finalActId,
       progressDeltaPercent: progress,
-      reviewedById: args.reviewerUserId || context?.user?.id,
+      reviewedById: reviewerId,
       resolvedAt: new Date(),
+      matchRationale: args.managerRemark?.trim() || item.matchRationale,
     },
   });
 
@@ -711,6 +756,23 @@ export async function getReviewerQueue(rawArgs: { projectId?: string } | undefin
       topCandidate: true,
     },
     orderBy: { createdAt: 'desc' },
+  });
+}
+
+/** Field-worker timeline, including the reviewer identity and final decision note. */
+export async function getFieldWorkerHistory(_rawArgs: unknown, context: any) {
+  const prisma = await getPrismaClient(context);
+  const supervisorId = await ensureSupervisor(prisma);
+  return prisma.fieldEvent.findMany({
+    where: { supervisorId },
+    include: {
+      reviewerItem: {
+        include: { reviewer: { select: { username: true, email: true, role: true } } },
+      },
+      matchedActivity: { select: { activityCode: true, name: true } },
+      project: { select: { code: true, name: true } },
+    },
+    orderBy: { eventTimestampHw: 'desc' },
   });
 }
 

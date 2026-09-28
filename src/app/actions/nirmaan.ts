@@ -32,6 +32,10 @@ export async function getReviewerQueueAction() {
   return await ops.getReviewerQueue({}, serverContext);
 }
 
+export async function getFieldWorkerHistoryAction() {
+  return await ops.getFieldWorkerHistory({}, serverContext);
+}
+
 export async function getDelayPredictionsAction(args: { projectId: string }) {
   return await ops.getDelayPredictions(args, serverContext);
 }

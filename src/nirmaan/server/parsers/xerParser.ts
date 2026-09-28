@@ -189,14 +189,26 @@ export function parsePrimaveraXER(xerContent: string): ParsedSchedule {
  * Lightweight XML Parser for MS Project XML schedules.
  */
 export function parseMSProjectXML(xmlContent: string): ParsedSchedule {
-  const projectMatch = xmlContent.match(/<Title>(.*?)<\/Title>/i) || xmlContent.match(/<Name>(.*?)<\/Name>/i);
-  const projName = projectMatch?.[1] || 'MS Project Export';
+  const readTag = (source: string, tag: string): string | undefined => {
+    const match = source.match(new RegExp(`<${tag}(?:\\s[^>]*)?>([\\s\\S]*?)<\\/${tag}>`, 'i'));
+    return match?.[1]?.trim();
+  };
+  const decodeXml = (value: string) => value
+    .replace(/&amp;/gi, '&')
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&quot;/gi, '"')
+    .replace(/&apos;/gi, "'");
+  const projectMatch = readTag(xmlContent, 'Title') || readTag(xmlContent, 'Name');
+  const projName = projectMatch ? decodeXml(projectMatch) : 'MS Project Export';
+  const projectStart = parseP6Date(readTag(xmlContent, 'StartDate')) || new Date();
+  const projectFinish = parseP6Date(readTag(xmlContent, 'FinishDate')) || new Date(projectStart.getTime() + 180 * 86400000);
 
   const project: ParsedProject = {
     code: 'MSP-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
     name: projName,
-    plannedStartDate: new Date(),
-    plannedFinishDate: new Date(Date.now() + 180 * 86400000),
+    plannedStartDate: projectStart,
+    plannedFinishDate: projectFinish,
   };
 
   const activities: ParsedActivity[] = [];
@@ -209,9 +221,9 @@ export function parseMSProjectXML(xmlContent: string): ParsedSchedule {
 
   while ((taskMatch = taskRegex.exec(xmlContent)) !== null) {
     const block = taskMatch[1] ?? '';
-    const uid = block.match(/<UID>(\d+)<\/UID>/i)?.[1] || '';
-    const name = block.match(/<Name>(.*?)<\/Name>/i)?.[1] || `Task-${uid}`;
-    const wbs = block.match(/<WBS>(.*?)<\/WBS>/i)?.[1] || 'Project';
+    const uid = readTag(block, 'UID') || '';
+    const name = decodeXml(readTag(block, 'Name') || `Task-${uid}`);
+    const wbs = decodeXml(readTag(block, 'WBS') || 'Project');
     
     // Ignore summary tasks
     if (block.match(/<Summary>1<\/Summary>/i)) continue;
@@ -219,10 +231,12 @@ export function parseMSProjectXML(xmlContent: string): ParsedSchedule {
     const code = `ACT-${uid}`;
     uidToCodeMap.set(uid, code);
 
-    const startStr = block.match(/<Start>(.*?)<\/Start>/i)?.[1];
-    const finishStr = block.match(/<Finish>(.*?)<\/Finish>/i)?.[1];
-    const start = startStr ? new Date(startStr) : new Date();
-    const finish = finishStr ? new Date(finishStr) : new Date(start.getTime() + 86400000);
+    const startStr = readTag(block, 'Start');
+    const finishStr = readTag(block, 'Finish');
+    const parsedStart = parseP6Date(startStr);
+    const start = parsedStart ?? projectStart;
+    const parsedFinish = parseP6Date(finishStr);
+    const finish = parsedFinish ?? new Date(start.getTime() + 86400000);
     const durationDays = Math.max(1, Math.round((finish.getTime() - start.getTime()) / 86400000));
 
     activities.push({
@@ -233,7 +247,7 @@ export function parseMSProjectXML(xmlContent: string): ParsedSchedule {
       plannedDurationDays: durationDays,
       plannedStart: start,
       plannedFinish: finish,
-      percentComplete: parseFloat(block.match(/<PercentComplete>(\d+)<\/PercentComplete>/i)?.[1] || '0'),
+      percentComplete: parseFloat(readTag(block, 'PercentComplete') || '0') || 0,
       taskId: uid,
     });
 
@@ -242,8 +256,8 @@ export function parseMSProjectXML(xmlContent: string): ParsedSchedule {
     let linkMatch: RegExpExecArray | null;
     while ((linkMatch = linkRegex.exec(block)) !== null) {
       const linkBlock = linkMatch[1] ?? '';
-      const predUID = linkBlock.match(/<PredecessorUID>(\d+)<\/PredecessorUID>/i)?.[1];
-      const typeNum = linkBlock.match(/<Type>(\d+)<\/Type>/i)?.[1] || '1'; // 1 = FS in MSP
+      const predUID = readTag(linkBlock, 'PredecessorUID');
+      const typeNum = readTag(linkBlock, 'Type') || '1'; // 1 = FS in MSP
       let depType: DependencyType = 'FS';
       if (typeNum === '0') depType = 'FF';
       else if (typeNum === '1') depType = 'FS';
@@ -305,8 +319,13 @@ function inferDiscipline(name: string, wbsPath: string): string {
 
 function parseP6Date(dateStr?: string): Date | null {
   if (!dateStr || dateStr.trim() === '') return null;
-  const cleaned = dateStr.trim();
-  // Handle P6 format "YYYY-MM-DD HH:mm" or "YYYY-MM-DD"
-  const d = new Date(cleaned.replace(' ', 'T'));
+  const normalized = dateStr.trim().replace(' ', 'T');
+  // P6 and MS Project exports omit a timezone. Interpret that wall-clock
+  // value consistently as UTC instead of allowing the server's timezone to
+  // shift schedule dates during import.
+  const timestamp = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?$/.test(normalized)
+    ? `${normalized}Z`
+    : normalized;
+  const d = new Date(timestamp);
   return isNaN(d.getTime()) ? null : d;
 }

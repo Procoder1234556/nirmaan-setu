@@ -29,6 +29,7 @@ export function ReviewerQueuePage() {
   const [isPlayingAudio, setIsPlayingAudio] = useState<boolean>(false);
   const [activeCandidateId, setActiveCandidateId] = useState<string | null>(null);
   const [progressDelta, setProgressDelta] = useState<number>(85);
+  const [managerRemark, setManagerRemark] = useState('');
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
 
   const currentItem: MockReviewerItem | undefined = items[selectedIndex];
@@ -54,6 +55,7 @@ export function ReviewerQueuePage() {
           resolution,
           finalActivityId: candidateId,
           progressDeltaPercent: progressDelta,
+          managerRemark,
         });
 
         setFeedbackMessage(
@@ -66,6 +68,7 @@ export function ReviewerQueuePage() {
         setTimeout(() => setFeedbackMessage(null), 3000);
 
         refetch();
+        setManagerRemark('');
         if (selectedIndex >= items.length - 1) {
           setSelectedIndex(Math.max(0, items.length - 2));
         }
@@ -434,6 +437,7 @@ export function ReviewerQueuePage() {
                   </div>
 
                   {/* Triage Decision Action Buttons */}
+                  <label className="block text-xs font-bold text-foreground">Manager / admin remark<textarea value={managerRemark} onChange={(event) => setManagerRemark(event.target.value)} rows={2} placeholder="Optional note for the field worker…" className="mt-1.5 w-full rounded-xl border border-border bg-background p-3 text-sm font-normal" /></label>
                   <div className="pt-4 border-t border-border flex flex-col sm:flex-row items-center gap-3">
                     {/* Approve Top Candidate */}
                     <button

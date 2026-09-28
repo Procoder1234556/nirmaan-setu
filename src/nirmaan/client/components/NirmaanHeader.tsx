@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useReviewerQueue } from '../operationsClient';
 import {
   HardHat,
@@ -11,6 +11,8 @@ import {
   ExternalLink,
   ImageIcon,
   Menu,
+  ShieldCheck,
+  UserRound,
   X,
   ChevronRight,
 } from 'lucide-react';
@@ -23,6 +25,18 @@ interface NirmaanHeaderProps {
 export function NirmaanHeader({ currentTab, projectId }: NirmaanHeaderProps) {
   const { pendingCount } = useReviewerQueue();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showRoleChooser, setShowRoleChooser] = useState(false);
+
+  useEffect(() => {
+    if (window.innerWidth < 1024 && !localStorage.getItem('nirmaan_mobile_role')) {
+      setShowRoleChooser(true);
+    }
+  }, []);
+
+  const selectMobileRole = (role: 'admin' | 'worker') => {
+    localStorage.setItem('nirmaan_mobile_role', role);
+    window.location.assign(role === 'admin' ? '/admin' : '/field-log');
+  };
 
   const navLinks = [
     {
@@ -66,6 +80,19 @@ export function NirmaanHeader({ currentTab, projectId }: NirmaanHeaderProps) {
 
   return (
     <>
+      {showRoleChooser && (
+        <div className="fixed inset-0 z-50 flex items-end bg-slate-950/45 p-4 lg:hidden" role="dialog" aria-modal="true" aria-labelledby="mobile-role-title">
+          <div className="w-full rounded-3xl bg-white p-5 shadow-2xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">Nirmaan Setu</p>
+            <h2 id="mobile-role-title" className="mt-2 text-xl font-bold text-slate-950">How are you using the app?</h2>
+            <p className="mt-1 text-sm text-slate-500">Choose a workspace to continue. You can change this from the menu later.</p>
+            <div className="mt-5 grid gap-3">
+              <button type="button" onClick={() => selectMobileRole('admin')} className="flex min-h-16 items-center gap-3 rounded-2xl border border-emerald-900/15 bg-emerald-50 p-4 text-left"><ShieldCheck className="h-6 w-6 text-emerald-700" /><span><span className="block text-sm font-bold text-slate-950">Administrator / Manager</span><span className="block text-xs text-slate-500">Review field submissions and manage projects</span></span></button>
+              <button type="button" onClick={() => selectMobileRole('worker')} className="flex min-h-16 items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-left"><UserRound className="h-6 w-6 text-slate-700" /><span><span className="block text-sm font-bold text-slate-950">Field worker</span><span className="block text-xs text-slate-500">Capture observations and see your upload history</span></span></button>
+            </div>
+          </div>
+        </div>
+      )}
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-72 flex-col border-r border-emerald-950/8 bg-white px-5 py-6 lg:flex">
         <a href="/projects" className="flex items-center gap-3 px-2">
           <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#0d5b3b] text-white shadow-lg shadow-emerald-900/15">
@@ -129,6 +156,7 @@ export function NirmaanHeader({ currentTab, projectId }: NirmaanHeaderProps) {
             <span className="sr-only">{isMobileMenuOpen ? 'Close menu' : 'Open menu'}</span>
             {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
+          <button type="button" onClick={() => { localStorage.removeItem('nirmaan_mobile_role'); setShowRoleChooser(true); }} className="inline-flex min-h-11 items-center justify-center rounded-xl px-2 text-[11px] font-semibold text-emerald-700">Role</button>
         </div>
         {isMobileMenuOpen && (
           <nav id="mobile-workspace-navigation" aria-label="Mobile workspace navigation" className="mt-3 grid grid-cols-2 gap-2 border-t border-slate-100 pt-3">

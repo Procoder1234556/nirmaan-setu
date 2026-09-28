@@ -101,6 +101,22 @@ function createMockPrisma() {
       },
     },
 
+    user: {
+      async findUnique({ where }: any) {
+        return store.users.get(where.id) || null;
+      },
+      async upsert({ where, create, update }: any) {
+        const existing = Array.from(store.users.values()).find(user => user.email === where.email);
+        if (existing) {
+          Object.assign(existing, update);
+          return existing;
+        }
+        const created = { id: `user-${Date.now()}-${Math.random()}`, ...create };
+        store.users.set(created.id, created);
+        return created;
+      },
+    },
+
     baselineActivity: {
       async upsert({ where, create, update }: any) {
         const existing = Array.from(store.activities.values()).find(
@@ -331,6 +347,7 @@ test('Operations: syncFieldEventsBatch processes Tier 1 auto-matches and Tier 2 
           supervisorId: 'sup-001',
           sourceType: 'MOBILE_VOICE',
           rawText: 'Excavation completed for Section A Trenching 5km today. 100% finished.',
+          location: { latitude: 27.4728, longitude: 94.912, accuracyMeters: 8, capturedAt: '2026-10-08T16:00:00.000Z' },
           eventTimestampHw: '2026-10-08T16:00:00.000Z',
           monotonicSeq: 1,
         },
@@ -340,6 +357,7 @@ test('Operations: syncFieldEventsBatch processes Tier 1 auto-matches and Tier 2 
           supervisorId: 'sup-001',
           sourceType: 'MOBILE_FORM',
           rawText: 'Stringing and Lowering Pipes Section A progress today, roughly 40 percent done.',
+          location: { latitude: 27.4728, longitude: 94.912, accuracyMeters: 8, capturedAt: '2026-10-09T16:00:00.000Z' },
           eventTimestampHw: '2026-10-09T16:00:00.000Z',
           monotonicSeq: 2,
         },
@@ -378,6 +396,7 @@ test('Operations: resolveReviewerItem approves candidate and commits verified pr
           supervisorId: 'sup-001',
           sourceType: 'MOBILE_VOICE',
           rawText: 'Rough pipe line lay down on Section A site. Approx 50 percent done.',
+          location: { latitude: 27.4728, longitude: 94.912, accuracyMeters: 8, capturedAt: '2026-10-12T12:00:00.000Z' },
           eventTimestampHw: '2026-10-12T12:00:00.000Z',
           monotonicSeq: 1,
         },

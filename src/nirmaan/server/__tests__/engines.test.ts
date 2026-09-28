@@ -75,6 +75,8 @@ test('xerParser: parses MS Project XML format', () => {
   const sampleXML = `<?xml version="1.0" encoding="UTF-8"?>
 <Project>
   <Title>Oil India Refinery MS Project</Title>
+  <StartDate>2026-10-01T08:00:00</StartDate>
+  <FinishDate>2026-10-12T17:00:00</FinishDate>
   <Tasks>
     <Task>
       <UID>10</UID>
@@ -100,6 +102,8 @@ test('xerParser: parses MS Project XML format', () => {
 </Project>`;
 
   const parsed = parseMSProjectXML(sampleXML);
+  assert.equal(parsed.project.plannedStartDate.toISOString(), '2026-10-01T08:00:00.000Z');
+  assert.equal(parsed.project.plannedFinishDate.toISOString(), '2026-10-12T17:00:00.000Z');
   assert.equal(parsed.activities.length, 2);
   assert.equal(parsed.activities[0]?.discipline, 'Civil');
   assert.equal(parsed.activities[1]?.discipline, 'Piping');
