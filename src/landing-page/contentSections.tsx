@@ -1,11 +1,8 @@
 import daBoiAvatar from "../client/static/da-boi.webp";
-import kivo from "../client/static/examples/kivo.webp";
-import messync from "../client/static/examples/messync.webp";
-import microinfluencerClub from "../client/static/examples/microinfluencers.webp";
-import promptpanda from "../client/static/examples/promptpanda.webp";
-import reviewradar from "../client/static/examples/reviewradar.webp";
-import scribeist from "../client/static/examples/scribeist.webp";
-import searchcraft from "../client/static/examples/searchcraft.webp";
+import openPitMine from "../client/static/examples/mining-open-pit.png";
+import undergroundMine from "../client/static/examples/mining-underground.png";
+import processingPlant from "../client/static/examples/mining-processing.png";
+import sustainableMine from "../client/static/examples/mining-sustainable.png";
 import type { GridFeature } from "./components/FeaturesGrid";
 
 export const features: GridFeature[] = [
@@ -135,27 +132,27 @@ export const footerNavigation = {
 
 export const examples = [
   {
-    name: "132km Crude Pipeline Sec-IV",
-    description: "OIL-ASSAM-PL-2026: Cross-country high-pressure crude transmission pipeline with Brahmaputra HDD river crossing.",
-    imageSrc: kivo,
+    name: "Kiriburu Open-Pit Iron Ore Mine",
+    description: "MINE-KIR-2026: Bench production, haul-road progress, and equipment readiness tracked against the integrated mine schedule.",
+    imageSrc: openPitMine,
     href: "/projects",
   },
   {
-    name: "Numaligarh Refinery Expansion Feedline",
-    description: "OIL-NUMALIGARH-REF-24: 68km 18-inch supply trunkline with automated block valve stations.",
-    imageSrc: messync,
+    name: "Malanjkhand Underground Copper Mine",
+    description: "MINE-MLK-UG-26: Underground development, ore handling, and ventilation works coordinated in one field-control workspace.",
+    imageSrc: undergroundMine,
     href: "/projects",
   },
   {
-    name: "Barauni Trunkline River Crossing HDD",
-    description: "OIL-BARAUNI-HDD-09: Specialized horizontal directional drilling across major floodplains.",
-    imageSrc: microinfluencerClub,
+    name: "Bailadila Mineral Processing Complex",
+    description: "MINE-BLD-PP-26: Crushing, conveying, and stockpile activities reconciled against daily production milestones.",
+    imageSrc: processingPlant,
     href: "/projects",
   },
   {
-    name: "Duliajan Central Gas Gathering Station",
-    description: "OIL-DULIAJAN-GGS-02: Structural piping, compressor tie-ins, and SCADA instrumentation upgrade.",
-    imageSrc: promptpanda,
+    name: "Responsible Mine Expansion Program",
+    description: "MINE-RES-26: Solar infrastructure, water management, and rehabilitation progress monitored alongside extraction targets.",
+    imageSrc: sustainableMine,
     href: "/projects",
   },
 ];
