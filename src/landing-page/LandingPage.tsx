@@ -1,89 +1,44 @@
-import Link from 'next/link';
-import { ArrowUpRight, Check, Mic, ShieldCheck } from 'lucide-react';
+'use client';
 
-const outcomes = [
-  ['Speak naturally', 'Capture the way a supervisor reports work, with the site context and time of capture.'],
-  ['See the proposed link', 'Compare the observation with the scheduled activity and inspect its confidence before accepting it.'],
-  ['Update only when trusted', 'Route uncertain records to a planner, then recalculate the schedule from verified actuals.'],
+import Link from 'next/link';
+import { ArrowRight, Check, CircleCheck, ClipboardCheck, Cloud, Database, FileUp, HardHat, Mic, Network, ShieldCheck, Upload } from 'lucide-react';
+
+const features = [
+  ['Baseline intelligence', 'Read Primavera P6 XER and MS Project XML schedules without moving the work into another system.', FileUp],
+  ['Evidence-led updates', 'Capture a field observation, retain its context, and show exactly what it proposes to change.', Mic],
+  ['Review before impact', 'Confidence-routing gives planners control before verified actuals recalculate the critical path.', ClipboardCheck],
+];
+
+const footerGroups = [
+  ['Workspace', 'Projects', 'Schedule & Gantt', 'Reviewer queue', 'Field logger'],
+  ['Capabilities', 'Baseline ingestion', 'CPM analysis', 'Causal sync', 'Historical benchmarks'],
+  ['Resources', 'Implementation guide', 'Evidence timeline', 'System status', 'Support'],
+  ['Organisation', 'Oil India Limited', 'SIH26122', 'Project controls', 'Privacy'],
 ];
 
 export function LandingPage() {
-  return (
-    <div className="min-h-screen overflow-x-hidden bg-[#f5f4f1] text-[#111110] selection:bg-[#d9f7a4]">
-      <main className="mx-auto max-w-[1500px] px-4 pb-6 pt-4 sm:px-6 lg:px-8">
-        <nav className="flex min-h-14 items-center justify-between gap-4 rounded-2xl border border-black/10 bg-white/70 px-4 backdrop-blur sm:px-5">
-          <Link href="/" className="flex min-w-0 items-center gap-2.5 font-semibold tracking-[-0.04em]">
-            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[#171717] text-sm font-bold text-[#d9f7a4]">N</span>
-            <span className="truncate">Nirmaan Setu</span>
-          </Link>
-          <div className="hidden items-center gap-6 text-sm font-medium text-black/55 md:flex">
-            <a href="#workflow" className="transition hover:text-black">How it works</a>
-            <a href="#scope" className="transition hover:text-black">What is live</a>
-          </div>
-          <Link href="/projects" className="inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-xl bg-[#171717] px-3.5 text-sm font-semibold text-white transition hover:bg-black sm:px-4">
-            Open workspace <ArrowUpRight className="h-4 w-4" />
-          </Link>
-        </nav>
+  return <div className="min-h-screen bg-[#fbfaf7] text-[#101b2d] selection:bg-[#ffd875] selection:text-[#101b2d]">
+    <main className="mx-auto max-w-[1440px] px-4 pb-6 pt-4 sm:px-6 lg:px-8">
+      <nav className="flex min-h-16 items-center justify-between gap-5 rounded-2xl border border-[#101b2d]/10 bg-white/80 px-4 backdrop-blur-md sm:px-6">
+        <Link href="/" className="flex items-center gap-3 font-semibold tracking-[-.04em]"><span className="grid h-9 w-9 place-items-center rounded-xl bg-[#0e223f] text-[#ffcf4f]"><HardHat className="h-5 w-5" /></span><span>Nirmaan Setu <span className="hidden text-[#6e7784] sm:inline">/ निर्माण सेतु</span></span></Link>
+        <div className="hidden items-center gap-7 text-sm text-[#536071] md:flex"><a href="#workflow">Workflow</a><a href="#controls">Controls</a><a href="#evidence">Evidence</a></div>
+        <Link href="/projects" className="inline-flex min-h-10 items-center gap-2 rounded-full bg-[#0e223f] px-4 text-sm font-semibold text-white transition hover:bg-[#17375f]">Open workspace <ArrowRight className="h-4 w-4" /></Link>
+      </nav>
 
-        <section className="pb-12 pt-16 text-center sm:pb-20 sm:pt-24 lg:pt-28">
-          <p className="mx-auto inline-flex items-center gap-2 rounded-full border border-black/10 bg-white px-3 py-1.5 text-xs font-semibold text-black/65">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#74a63f]" />
-            SIH26122 · Oil India Limited
-          </p>
-          <h1 className="mx-auto mt-6 max-w-5xl text-balance text-5xl font-semibold leading-[0.93] tracking-[-0.065em] sm:text-7xl lg:text-[6.9rem]">
-            Tell us what happened.
-            <span className="block text-[#578a2c]">See what it changes.</span>
-          </h1>
-          <p className="mx-auto mt-7 max-w-2xl text-pretty text-base leading-7 text-black/60 sm:text-lg">
-            Nirmaan Setu connects plain-language site progress to the activity that drives the plan, so schedule updates remain visible, reviewable, and grounded in field evidence.
-          </p>
-          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-            <Link href="/field-log" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#171717] px-5 text-sm font-semibold text-white transition hover:bg-black">
-              Capture a field update <Mic className="h-4 w-4" />
-            </Link>
-            <Link href="/projects" className="inline-flex min-h-12 items-center justify-center rounded-xl border border-black/15 bg-white px-5 text-sm font-semibold transition hover:border-black/35">
-              View project controls
-            </Link>
-          </div>
-        </section>
+      <section className="relative mt-4 overflow-hidden rounded-[26px] bg-[#cceefa] px-5 pb-0 pt-14 text-center sm:px-10 sm:pt-20 lg:pt-24">
+        <div className="absolute inset-0 overflow-hidden" aria-hidden="true"><div className="absolute -left-12 top-16 h-32 w-72 rounded-full bg-white/50 blur-2xl" /><div className="absolute right-4 top-5 h-40 w-96 rounded-full bg-white/65 blur-3xl" /><div className="absolute bottom-20 left-1/3 h-20 w-64 rounded-full bg-[#8bd7eb]/45 blur-2xl" /></div>
+        <div className="relative mx-auto max-w-4xl"><p className="text-xs font-bold uppercase tracking-[.16em] text-[#1775e8]">Oil India · project controls</p><h1 className="mt-5 text-balance text-5xl font-semibold leading-[.94] tracking-[-.065em] text-[#0e223f] sm:text-7xl lg:text-[5.7rem]">Field truth, carried<br />into the plan.</h1><p className="mx-auto mt-6 max-w-2xl text-pretty text-base leading-7 text-[#42536a] sm:text-lg">Nirmaan Setu turns site progress into accountable schedule decisions—connecting the observation, the activity, and the critical path in one clear workflow.</p><Link href="/field-log" className="mt-8 inline-flex min-h-11 items-center gap-2 rounded-full bg-[#101b2d] px-5 text-sm font-semibold text-white">Capture field progress <Mic className="h-4 w-4" /></Link></div>
+        <div className="relative mx-auto mt-12 max-w-5xl rounded-t-[22px] border border-[#0e223f]/15 bg-white p-3 text-left shadow-[0_22px_55px_rgba(33,87,112,.18)] sm:p-5"><div className="flex gap-1.5 border-b border-[#e7edf1] pb-3"><i className="h-2.5 w-2.5 rounded-full bg-[#f5b9a9]" /><i className="h-2.5 w-2.5 rounded-full bg-[#f5d66b]" /><i className="h-2.5 w-2.5 rounded-full bg-[#8ed0a1]" /><span className="ml-3 text-xs text-[#87929e]">Nirmaan Setu / live schedule impact</span></div><div className="grid gap-4 py-5 md:grid-cols-[.86fr_1.14fr]"><div className="rounded-xl bg-[#f8fafb] p-4"><p className="text-xs font-semibold text-[#1775e8]">FIELD OBSERVATION</p><p className="mt-5 text-lg font-semibold tracking-[-.03em]">“Trenching complete from km 0–25. Ready for the next right-of-way release.”</p><div className="mt-6 flex items-center gap-2 text-xs text-[#647287]"><span className="h-2 w-2 rounded-full bg-[#2e9c64]" /> Captured at source · queued safely offline</div></div><div className="rounded-xl bg-[#0e223f] p-4 text-white"><div className="flex items-start justify-between"><div><p className="text-xs font-semibold text-[#91ddf0]">SCHEDULE DECISION</p><p className="mt-4 text-xl font-semibold tracking-[-.04em]">ACT-TR-02 · Trenching km 0–25</p></div><span className="rounded-full bg-[#ffcf4f] px-2.5 py-1 text-xs font-bold text-[#101b2d]">Review</span></div><div className="mt-8 grid grid-cols-3 gap-2 text-xs"><span className="rounded-lg bg-white/10 p-2.5">Confidence<br /><b>0.78</b></span><span className="rounded-lg bg-white/10 p-2.5">Float<br /><b>0.0 days</b></span><span className="rounded-lg bg-white/10 p-2.5">Status<br /><b>Pending</b></span></div></div></div></div>
+      </section>
 
-        <section aria-label="Field update transformation" className="rounded-[2rem] bg-[#171717] p-3 shadow-[0_22px_70px_rgba(17,17,16,0.18)] sm:p-5">
-          <div className="grid overflow-hidden rounded-[1.45rem] bg-[#f7f7f4] lg:grid-cols-[1fr_72px_1fr]">
-            <div className="p-5 sm:p-8">
-              <div className="flex items-center justify-between gap-3">
-                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-black/45">Field observation</p>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#e6f8d1] px-2.5 py-1 text-[11px] font-semibold text-[#43711e]"><Mic className="h-3.5 w-3.5" /> Voice or text</span>
-              </div>
-              <div className="mt-12 rounded-2xl border border-black/10 bg-white p-4 shadow-sm sm:p-5">
-                <p className="text-sm leading-6 text-black/85">“Trenching is complete from kilometre 0 to 25. The crew is ready for the next section once the right of way is cleared.”</p>
-                <div className="mt-5 flex items-center gap-2 border-t border-black/8 pt-3 text-xs text-black/45"><span className="h-2 w-2 rounded-full bg-[#74a63f]" /> Timestamped at source</div>
-              </div>
-              <p className="mt-4 text-sm leading-6 text-black/55">Capture observations as crews describe the work. Offline records stay in the local outbox until they are synced.</p>
-            </div>
-            <div className="hidden items-center justify-center bg-[#e5f7cc] lg:flex"><div className="grid h-10 w-10 place-items-center rounded-full bg-[#171717] text-[#d9f7a4]"><ArrowUpRight className="h-5 w-5" /></div></div>
-            <div className="border-t border-black/10 bg-[#e5f7cc] p-5 lg:border-l lg:border-t-0 sm:p-8">
-              <div className="flex items-center justify-between gap-3"><p className="text-xs font-semibold uppercase tracking-[0.16em] text-black/50">Schedule decision</p><span className="rounded-full bg-black px-2.5 py-1 text-[11px] font-semibold text-white">Planner review</span></div>
-              <div className="mt-12 rounded-2xl border border-black/10 bg-white/85 p-4 shadow-sm sm:p-5">
-                <p className="text-xs font-medium text-black/50">Proposed activity</p><p className="mt-2 text-xl font-semibold tracking-[-0.035em]">ACT-TR-02 · Trenching km 0-25</p>
-                <div className="mt-5 flex items-center justify-between gap-3 border-t border-black/8 pt-3"><span className="text-xs font-medium text-black/55">Match confidence</span><span className="rounded-full bg-[#e6f8d1] px-2.5 py-1 text-xs font-semibold text-[#43711e]">Review required</span></div>
-              </div>
-              <p className="mt-4 text-sm leading-6 text-black/60">A planner can approve, reassign, or dismiss the proposed link before verified actuals affect CPM and forecast dates.</p>
-            </div>
-          </div>
-        </section>
+      <section id="workflow" className="grid gap-10 py-24 lg:grid-cols-[.78fr_1.22fr] lg:items-end"><p className="text-sm font-semibold text-[#1775e8]">From site observation to schedule decision →</p><div><h2 className="max-w-2xl text-4xl font-semibold leading-[.98] tracking-[-.055em] sm:text-6xl">The field and the plan should tell the same story.</h2><p className="mt-5 max-w-xl text-base leading-7 text-[#66717e]">Make the chain of evidence visible instead of relying on delayed status reports and disconnected updates.</p></div></section>
+      <section className="grid gap-4 md:grid-cols-3">{features.map(([title, description, Icon]) => { const FeatureIcon = Icon as typeof FileUp; return <article key={title as string} className="rounded-2xl border border-[#e3e7ea] bg-white p-6 transition hover:-translate-y-1 hover:border-[#a6dce9]"><div className="grid h-40 place-items-center rounded-xl bg-[#eaf8fc]"><FeatureIcon className="h-12 w-12 text-[#1775e8]" strokeWidth={1.4} /></div><p className="mt-7 text-xl font-semibold tracking-[-.035em]">{title as string}</p><p className="mt-3 text-sm leading-6 text-[#66717e]">{description as string}</p></article>})}</section>
 
-        <section id="workflow" className="grid gap-4 py-16 sm:py-24 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
-          <div className="px-1 sm:px-3"><p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#578a2c]">The planning-to-execution bridge</p><h2 className="mt-4 max-w-lg text-4xl font-semibold leading-[0.98] tracking-[-0.055em] sm:text-6xl">Less chasing. More traceable progress.</h2></div>
-          <div className="grid gap-3 sm:grid-cols-3">{outcomes.map(([title, copy], index) => <article key={title} className="rounded-2xl border border-black/10 bg-white p-5 sm:p-6"><span className="grid h-8 w-8 place-items-center rounded-full bg-[#e5f7cc] text-xs font-semibold text-[#43711e]">0{index + 1}</span><h3 className="mt-10 text-xl font-semibold tracking-[-0.035em]">{title}</h3><p className="mt-3 text-sm leading-6 text-black/55">{copy}</p></article>)}</div>
-        </section>
+      <section id="controls" className="grid gap-12 py-28 lg:grid-cols-[.85fr_1.15fr] lg:items-center"><div><p className="text-sm font-semibold text-[#1775e8]">Accountable by design</p><h2 className="mt-4 text-4xl font-semibold leading-[.98] tracking-[-.055em] sm:text-6xl">No silent schedule changes.</h2><p className="mt-6 max-w-md text-base leading-7 text-[#66717e]">Low-confidence matches remain visible to a planner. Verified actuals, their evidence, and their CPM effects are kept together.</p><a href="/reviewer-queue" className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[#1775e8]">Explore reviewer queue <ArrowRight className="h-4 w-4" /></a></div><div className="rounded-2xl bg-[#f2f5f6] p-5 sm:p-8"><div className="rounded-xl border border-[#dce3e5] bg-white p-5"><div className="flex items-center justify-between"><span className="text-sm font-semibold">Activity reconciliation</span><span className="rounded-full bg-[#fff1c4] px-2.5 py-1 text-xs font-bold text-[#755708]">Needs review</span></div><div className="mt-7 space-y-3">{[['ACT-TR-02', 'Trenching km 0–25', '78%'], ['ACT-TR-03', 'Right-of-way release', '61%'], ['ACT-CL-05', 'Coating inspection', '42%']].map(([code, label, score], i) => <div key={code} className={`flex items-center gap-4 rounded-lg p-3 ${i === 0 ? 'bg-[#eaf8fc]' : 'bg-[#fafafa]'}`}><span className="w-20 text-xs font-bold text-[#1775e8]">{code}</span><span className="flex-1 text-sm font-medium">{label}</span><span className="text-xs text-[#66717e]">{score}</span></div>)}</div><div className="mt-5 flex gap-2"><button className="rounded-full bg-[#0e223f] px-4 py-2 text-xs font-semibold text-white">Approve</button><button className="rounded-full border border-[#dce3e5] px-4 py-2 text-xs font-semibold">Reassign</button></div></div></div></section>
 
-        <section id="scope" className="grid gap-4 rounded-[2rem] bg-white p-6 sm:p-10 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
-          <div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#578a2c]">What is live now</p><h2 className="mt-4 max-w-md text-4xl font-semibold leading-[0.98] tracking-[-0.055em] sm:text-5xl">Build confidence before changing the schedule.</h2><p className="mt-5 max-w-md text-sm leading-6 text-black/55">The current workflow ingests Primavera XER and MS Project XML baselines, captures typed field observations, proposes activity links, routes uncertainty to review, recalculates CPM, and exports XER actuals.</p></div>
-          <div className="grid gap-3 sm:grid-cols-2">{[['Baseline intake', 'Primavera XER and MS Project XML schedule parsing.'], ['Reviewer queue', 'Proposed activity links remain explicit and reversible.'], ['CPM visibility', 'Critical path, float, and forecast variance from verified actuals.'], ['Evidence boundaries', 'Photos and recordings stay local in the current MVP. OCR and voice transcription are not yet enabled.']].map(([title, copy]) => <div key={title} className="rounded-2xl bg-[#f5f4f1] p-4 sm:p-5"><Check className="h-4 w-4 text-[#578a2c]" /><h3 className="mt-7 font-semibold tracking-[-0.025em]">{title}</h3><p className="mt-2 text-sm leading-6 text-black/55">{copy}</p></div>)}</div>
-        </section>
-
-        <footer className="flex flex-col gap-4 px-2 pb-3 pt-10 text-xs text-black/45 sm:flex-row sm:items-end sm:justify-between"><div><p className="font-semibold text-black">Nirmaan Setu</p><p className="mt-1">Infrastructure schedule-linking for Oil India Limited.</p></div><p className="inline-flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5" /> SIH26122 · Smart Automation / Software</p></footer>
-      </main>
-    </div>
-  );
+      <section id="evidence" className="border-y border-[#e3e7ea] py-24 text-center"><p className="text-sm font-semibold text-[#1775e8]">Built for the operational record</p><h2 className="mx-auto mt-4 max-w-3xl text-4xl font-semibold leading-[.98] tracking-[-.055em] sm:text-6xl">A schedule can show its work.</h2><p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-[#66717e]">Baseline uploads, causal field logs, confidence decisions, and updated forecasts form one traceable chain—ready for project-control conversations.</p><div className="mx-auto mt-12 grid max-w-5xl gap-3 sm:grid-cols-4">{[[Upload, 'Ingest', 'Baseline schedule'], [Network, 'Reconcile', 'Activity candidates'], [CircleCheck, 'Verify', 'Planner decision'], [Database, 'Learn', 'Historical context']].map(([Icon, title, copy]) => { const StepIcon = Icon as typeof Upload; return <div key={title as string} className="rounded-xl bg-white p-5"><StepIcon className="mx-auto h-6 w-6 text-[#1775e8]" /><p className="mt-4 font-semibold">{title as string}</p><p className="mt-1 text-xs text-[#66717e]">{copy as string}</p></div>})}</div></section>
+      <section className="my-6 overflow-hidden rounded-[26px] bg-[#1775e8] px-6 py-20 text-center text-white"><div className="mx-auto max-w-3xl"><Cloud className="mx-auto h-8 w-8 text-[#b7f0ff]" /><h2 className="mt-5 text-balance text-4xl font-semibold leading-[.98] tracking-[-.055em] sm:text-6xl">Bring site progress<br />back into the plan.</h2><p className="mx-auto mt-5 max-w-xl leading-7 text-white/75">Open the workspace to load a demonstration project, record an update, and follow its schedule impact.</p><Link href="/projects" className="mt-8 inline-flex min-h-11 items-center gap-2 rounded-full bg-[#101b2d] px-5 text-sm font-semibold">Open Nirmaan Setu <ArrowRight className="h-4 w-4" /></Link></div></section>
+      <footer className="px-2 py-16"><div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-5"><div><div className="flex items-center gap-2 font-semibold tracking-[-.04em]"><span className="grid h-8 w-8 place-items-center rounded-lg bg-[#0e223f] text-[#ffcf4f]"><HardHat className="h-4 w-4" /></span>Nirmaan Setu</div><p className="mt-3 max-w-xs text-sm leading-6 text-[#66717e]">Project controls that keep field progress and schedule reality connected.</p></div>{footerGroups.map(([heading, ...links]) => <div key={heading}><p className="text-sm font-semibold">{heading}</p><ul className="mt-4 space-y-2.5 text-sm text-[#66717e]">{links.map(link => <li key={link}><a href="#">{link}</a></li>)}</ul></div>)}</div><div className="mt-14 flex flex-col gap-3 border-t border-[#e3e7ea] pt-5 text-xs text-[#788390] sm:flex-row sm:justify-between"><span>© 2026 Nirmaan Setu · SIH26122</span><span className="inline-flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5" /> Oil India Limited project controls</span></div></footer>
+    </main>
+  </div>;
 }
