@@ -120,17 +120,19 @@ export function ProjectsDashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#f4f7f5] text-slate-950">
       <NirmaanHeader currentTab="projects" />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8">
+      <main className="mx-auto max-w-[1600px] px-4 py-6 sm:px-6 sm:py-8 lg:ml-72 lg:px-10 lg:py-10">
+        <div className="rounded-[28px] border border-white/80 bg-white/75 p-4 shadow-[0_20px_60px_rgba(17,44,33,0.06)] sm:p-6 lg:p-8">
         {/* Top Title & Action Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex flex-col gap-4 border-b border-slate-100 pb-6 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-emerald-700">Portfolio overview</p>
+            <h2 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">
               Project controls
             </h2>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-500">
               Review the link between site observations, planned activities, and the current CPM forecast.
             </p>
           </div>
@@ -138,7 +140,7 @@ export function ProjectsDashboardPage() {
           <button
             onClick={handleBootstrapDemo}
             disabled={isBootstrappingDemo}
-            className="inline-flex min-h-11 w-full sm:w-auto justify-center items-center gap-2 px-4 py-2.5 rounded-lg border border-border bg-card text-foreground font-semibold text-sm hover:bg-muted disabled:opacity-50 transition-all cursor-pointer"
+            className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-emerald-900/20 bg-white px-5 py-2.5 text-sm font-semibold text-emerald-950 transition-all hover:bg-emerald-50 disabled:opacity-50 sm:w-auto"
           >
             {isBootstrappingDemo ? 'Preparing demo…' : 'Load judging demo'}
           </button>
@@ -147,7 +149,7 @@ export function ProjectsDashboardPage() {
               setUploadResult(null);
               setIsUploadModalOpen(true);
             }}
-            className="inline-flex min-h-11 w-full sm:w-auto justify-center items-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-primary-foreground font-semibold text-sm hover:opacity-95 shadow-md shadow-primary/20 transition-all cursor-pointer"
+            className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-[#0d5b3b] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-900/15 transition-all hover:bg-[#08442d] sm:w-auto"
           >
             <Upload className="w-4 h-4" />
             Upload Baseline Schedule (.XER / .XML)
@@ -156,28 +158,28 @@ export function ProjectsDashboardPage() {
         </div>
 
         {/* 4 High-Level KPI Cards */}
-        <div className="grid grid-cols-1 min-[380px]:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="mt-6 grid grid-cols-1 gap-3 min-[380px]:grid-cols-2 lg:grid-cols-4 lg:gap-4">
           {/* Card 1 */}
-          <div className="min-w-0 p-4 sm:p-5 rounded-xl border border-border bg-card/60 shadow-sm relative overflow-hidden">
+          <div className="relative min-w-0 overflow-hidden rounded-2xl bg-gradient-to-br from-[#0c4c35] to-[#18855d] p-4 text-white shadow-lg shadow-emerald-900/15 sm:p-5">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+              <span className="text-xs font-medium uppercase tracking-wider text-emerald-50/80">
                 Active Projects
               </span>
-              <div className="p-2 rounded-lg bg-primary/10 text-primary">
+              <div className="rounded-full bg-white/15 p-2 text-white">
                 <Layers className="w-4 h-4" />
               </div>
             </div>
             <div className="mt-3">
-              <div className="text-2xl sm:text-3xl font-extrabold text-foreground">{totalProjects}</div>
-              <p className="hidden sm:flex text-xs text-muted-foreground mt-1 items-center gap-1">
-                <Building2 className="w-3.5 h-3.5 text-emerald-500" />
+              <div className="text-3xl font-extrabold sm:text-4xl">{totalProjects}</div>
+              <p className="mt-1 hidden items-center gap-1 text-xs text-emerald-50/80 sm:flex">
+                <Building2 className="h-3.5 w-3.5 text-emerald-200" />
                 Capital assets under tracking
               </p>
             </div>
           </div>
 
           {/* Card 2 */}
-          <div className="min-w-0 p-4 sm:p-5 rounded-xl border border-border bg-card/60 shadow-sm relative overflow-hidden">
+          <div className="relative min-w-0 overflow-hidden rounded-2xl border border-slate-100 bg-white p-4 shadow-sm sm:p-5">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Critical Path Slip
@@ -198,7 +200,7 @@ export function ProjectsDashboardPage() {
           </div>
 
           {/* Card 3 */}
-          <div className="min-w-0 p-4 sm:p-5 rounded-xl border border-border bg-card/60 shadow-sm relative overflow-hidden">
+          <div className="relative min-w-0 overflow-hidden rounded-2xl border border-slate-100 bg-white p-4 shadow-sm sm:p-5">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Reviewer Queue
@@ -220,7 +222,7 @@ export function ProjectsDashboardPage() {
           </div>
 
           {/* Card 4 */}
-          <div className="min-w-0 p-4 sm:p-5 rounded-xl border border-border bg-card/60 shadow-sm relative overflow-hidden">
+          <div className="relative min-w-0 overflow-hidden rounded-2xl border border-slate-100 bg-white p-4 shadow-sm sm:p-5">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 Causal Field Logs
@@ -239,7 +241,7 @@ export function ProjectsDashboardPage() {
         </div>
 
         {/* Filter and Search Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 p-3 sm:p-4 rounded-xl border border-border bg-card/40">
+        <div className="mt-6 flex flex-col justify-between gap-3 rounded-2xl border border-slate-100 bg-slate-50/80 p-3 sm:flex-row sm:items-center sm:gap-4 sm:p-4">
           <div className="relative w-full sm:w-80">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input
@@ -247,7 +249,7 @@ export function ProjectsDashboardPage() {
               placeholder="Search project code or name..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="min-h-11 w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/40"
+              className="min-h-11 w-full rounded-xl border border-slate-200 bg-white py-2 pl-9 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600/30"
             />
           </div>
 
@@ -259,8 +261,8 @@ export function ProjectsDashboardPage() {
                 onClick={() => setStatusFilter(status)}
                 className={`min-h-11 shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                   statusFilter === status
-                    ? 'bg-primary text-primary-foreground font-semibold shadow-xs'
-                    : 'bg-muted text-muted-foreground hover:text-foreground'
+                    ? 'bg-[#0d5b3b] text-white font-semibold shadow-sm'
+                    : 'bg-white text-slate-500 hover:text-slate-900'
                 }`}
               >
                 {status === 'ALL'
@@ -276,15 +278,15 @@ export function ProjectsDashboardPage() {
         </div>
 
         {/* Mobile project cards keep the schedule summary readable without table scrolling. */}
-        <div className="space-y-3 md:hidden">
+        <div className="mt-6 space-y-3 md:hidden">
           {!isLoading && filteredProjects.length === 0 && (
-            <div className="rounded-xl border border-border bg-card/60 px-5 py-10 text-center">
+          <div className="rounded-2xl border border-slate-100 bg-white px-5 py-10 text-center">
               <p className="font-semibold text-foreground">No project baselines yet</p>
               <p className="mt-1 text-xs text-muted-foreground">Upload a Primavera XER or MS Project XML baseline to start the schedule workflow.</p>
             </div>
           )}
           {filteredProjects.map((project) => (
-            <article key={project.id} className="rounded-xl border border-border bg-card/60 p-4 shadow-sm">
+            <article key={project.id} className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <h3 className="font-semibold text-foreground leading-snug">{project.name}</h3>
@@ -329,10 +331,10 @@ export function ProjectsDashboardPage() {
         </div>
 
         {/* Desktop schedule table */}
-        <div className="hidden md:block rounded-xl border border-border bg-card/60 shadow-sm overflow-hidden">
+        <div className="mt-6 hidden overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm md:block">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-muted/50 border-b border-border text-xs uppercase font-semibold text-muted-foreground">
+              <thead className="border-b border-slate-100 bg-slate-50/80 text-xs font-semibold uppercase text-slate-500">
                 <tr>
                   <th className="px-6 py-4">Project & Code</th>
                   <th className="px-6 py-4">Planned Baseline</th>
@@ -414,7 +416,7 @@ export function ProjectsDashboardPage() {
             </table>
           </div>
         </div>
-        {error && <p role="alert" className="text-xs text-destructive">Unable to load workspace projects: {error}</p>}
+        {error && <p role="alert" className="mt-4 text-xs text-destructive">Unable to load workspace projects: {error}</p>}
 
         {/* Upload Baseline Modal */}
         {isUploadModalOpen && (
@@ -574,6 +576,7 @@ export function ProjectsDashboardPage() {
             </div>
           </div>
         )}
+        </div>
       </main>
     </div>
   );

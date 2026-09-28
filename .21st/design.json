@@ -1,0 +1,9 @@
+{
+  "decisions": [
+    {
+      "area": "projects-dashboard",
+      "direction": "Soft neutral workspace canvas with an emerald project-controls accent, rounded data cards, and a persistent desktop sidebar.",
+      "constraints": "Retain all existing dashboard text, routes, filters, upload flow, and project data interactions."
+    }
+  ]
+}
