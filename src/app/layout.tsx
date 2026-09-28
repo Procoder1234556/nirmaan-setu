@@ -1,12 +1,15 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { PwaRegistration } from '@/nirmaan/client/components/PwaRegistration';
 
 export const metadata: Metadata = {
-  title: "Nirmaan Setu — Oil India Limited",
-  description: "Intelligent Field Data Capture & Dynamic CPM Schedule-Linking Layer",
+  title: "Nirman Setu — Daily site reports become live schedule truth",
+  description: "Intelligent field data capture and dynamic CPM schedule-linking layer for Oil India Limited.",
   manifest: '/manifest.webmanifest',
-  themeColor: '#002244',
+};
+
+export const viewport: Viewport = {
+  themeColor: '#171717',
 };
 
 export default function RootLayout({

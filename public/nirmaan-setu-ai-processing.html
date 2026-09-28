@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Processing — Nirmaan Setu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="nirmaan-setu.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="app-bar">
+      <a href="nirmaan-setu-landing.html" class="logo">Nirmaan<span> Setu</span></a>
+      <div class="app-bar-meta">
+        <span class="project-chip" id="project-chip">NH-42-EAST</span>
+        <span class="role-chip">Site Engineer</span>
+      </div>
+    </header>
+
+    <div class="page-head" style="text-align:center;">
+      <p class="label">AI MATCH LAYER</p>
+      <h1>Matching report to the live plan</h1>
+      <p style="margin:0 auto;">AI proposes task links and confidence scores. Nothing is written into the schedule yet.</p>
+    </div>
+
+    <div class="card card-white" style="text-align:center; margin-bottom:16px;">
+      <div class="spinner" aria-hidden="true"></div>
+      <h3 id="status-title">Reading site note…</h3>
+      <p id="status-sub" class="caption" style="margin-top:6px;">Plain text + photos · Offline sync complete</p>
+    </div>
+
+    <div class="progress-steps" id="steps">
+      <div class="progress-step is-done" data-step="0">
+        <div class="step-mark">✓</div>
+        <div>
+          <h3>Report received</h3>
+          <p>Local save verified · synced to project</p>
+        </div>
+      </div>
+      <div class="progress-step is-active" data-step="1">
+        <div class="step-mark">2</div>
+        <div>
+          <h3>Extracting work signals</h3>
+          <p>Location, quantities, blockers, weather</p>
+        </div>
+      </div>
+      <div class="progress-step is-pending" data-step="2">
+        <div class="step-mark">3</div>
+        <div>
+          <h3>Linking to plan tasks</h3>
+          <p>Confidence score · task candidates</p>
+        </div>
+      </div>
+      <div class="progress-step is-pending" data-step="3">
+        <div class="step-mark">4</div>
+        <div>
+          <h3>Ready for your confirmation</h3>
+          <p>You confirm before planner review</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="banner banner-ai" style="margin-top:18px;">
+      <strong>Human in the loop.</strong> AI suggests. You confirm matches. Planner still approves schedule writes.
+    </div>
+
+    <p class="caption" style="text-align:center; margin-top:16px;">
+      Taking longer than usual?
+      <a href="nirmaan-setu-match-confirmation.html" style="color:var(--black);">Skip to confirmation</a>
+    </p>
+  </div>
+
+
+  <script src="ns-cookies.js"></script>
+
+  <script src="ns-demo-core.js"></script>
+  <script src="ns-demo.js"></script>
+</body>
+</html>
