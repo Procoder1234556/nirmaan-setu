@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { MobileInstallPrompt } from '@/nirmaan/client/components/MobileInstallPrompt';
 import { PwaRegistration } from '@/nirmaan/client/components/PwaRegistration';
 
 export const metadata: Metadata = {
@@ -19,6 +20,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <PwaRegistration />
         {children}
+        <MobileInstallPrompt />
       </body>
     </html>
   );
