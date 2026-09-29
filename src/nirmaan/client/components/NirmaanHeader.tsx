@@ -112,17 +112,17 @@ export function NirmaanHeader({ currentTab, projectId }: NirmaanHeaderProps) {
                 <a
                   key={link.id}
                   href={link.href}
-                  className={`group flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
+                  className={`group flex h-11 w-full items-center gap-3 rounded-xl px-3 text-sm font-medium transition-colors ${
                     isActive
                       ? 'bg-emerald-50 text-[#0d5b3b]'
                       : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
                   }`}
                 >
-                  <Icon className={`h-4 w-4 ${isActive ? 'text-[#168259]' : 'text-slate-400 group-hover:text-[#168259]'}`} />
-                  <span>{link.label}</span>
+                  <Icon className={`h-4 w-4 shrink-0 ${isActive ? 'text-[#168259]' : 'text-slate-400 group-hover:text-[#168259]'}`} />
+                  <span className="min-w-0 truncate">{link.label}</span>
                   {link.badge !== null && link.badge !== undefined && (
                     <span
-                      className={`ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                      className={`ml-auto shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-bold ${
                         isActive
                           ? 'bg-[#0d5b3b] text-white'
                           : 'bg-destructive text-destructive-foreground'
@@ -164,7 +164,7 @@ export function NirmaanHeader({ currentTab, projectId }: NirmaanHeaderProps) {
               const Icon = link.icon;
               const isActive = currentTab === link.id;
               return (
-                <a key={link.id} href={link.href} onClick={() => setIsMobileMenuOpen(false)} className={`flex min-h-11 items-center gap-2 rounded-xl px-3 text-xs font-semibold ${isActive ? 'bg-[#0d5b3b] text-white' : 'bg-slate-50 text-slate-700'}`}>
+                <a key={link.id} href={link.href} onClick={() => setIsMobileMenuOpen(false)} className={`flex h-11 min-w-0 items-center gap-2 rounded-xl px-2.5 text-xs font-semibold ${isActive ? 'bg-[#0d5b3b] text-white' : 'bg-slate-50 text-slate-700'}`}>
                   <Icon className="h-4 w-4 shrink-0" />
                   <span className="min-w-0 truncate">{link.label}</span>
                   {link.badge !== null && link.badge !== undefined && <span className="ml-auto rounded-full bg-destructive px-1.5 py-0.5 text-[10px] text-destructive-foreground">{link.badge}</span>}
