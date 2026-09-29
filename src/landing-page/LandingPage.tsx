@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useEffect } from 'react';
 import { ArrowRight, HardHat } from 'lucide-react';
 
 const workflows = [
@@ -17,6 +18,16 @@ const trail = [
 ];
 
 export function LandingPage() {
+  useEffect(() => {
+    const sections = Array.from(document.querySelectorAll<HTMLElement>('.landing-scroll > section'));
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach((entry) => { if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); } }),
+      { threshold: 0.12, rootMargin: '0px 0px -7% 0px' },
+    );
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
+
   return <div className="min-h-screen overflow-x-clip bg-[#fbfbfa] font-[Arial,Helvetica,sans-serif] text-[#171717] selection:bg-[#ffd52e]">
     <header className="mx-auto flex max-w-[1440px] items-start justify-between px-5 pb-3 pt-4 sm:px-8">
       <Link href="/" className="text-[25px] font-medium leading-[.82] tracking-[-.09em] sm:text-[34px]" aria-label="Nirmaan Setu home">NIRMAAN<br />SETU.</Link>
@@ -24,7 +35,7 @@ export function LandingPage() {
       <Link href="/projects" className="inline-flex min-h-11 items-center gap-2 rounded-full bg-black px-4 text-xs font-bold text-white transition hover:bg-[#343434] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1f39d2]">Open workspace <ArrowRight className="h-3.5 w-3.5" /></Link>
     </header>
 
-    <main>
+    <main className="landing-scroll">
       <section className="border-y border-black bg-white"><TriangularMosaic className="hero-mosaic h-[155px] sm:h-[220px] lg:h-[290px]" density={410} /><div className="mx-auto max-w-[1120px] px-5 pb-18 pt-14 sm:px-8 sm:pb-28 sm:pt-20"><h1 className="max-w-[720px] text-[clamp(2.5rem,6vw,6.25rem)] font-medium leading-[.88] tracking-[-.085em]">Field work,<br />accounted for.</h1><p className="mt-8 max-w-[520px] text-[18px] leading-[1.06] tracking-[-.045em] sm:text-[25px]">Nirmaan Setu carries site observations into the project plan without hiding the evidence, the uncertainty, or the decision.</p><Link href="/field-log" className="mt-8 inline-flex min-h-11 items-center rounded-full bg-[#1f39d2] px-5 text-sm font-bold text-white transition hover:bg-[#172da5]">Record field progress</Link></div></section>
 
       <section className="mx-auto max-w-[1120px] px-5 py-20 sm:px-8 sm:py-28"><p className="max-w-[680px] text-[20px] leading-[.98] tracking-[-.045em] sm:text-[29px]">Project controls work when the people at the site and the people managing the plan are working from the same record.</p><div className="mt-12 grid gap-4 md:grid-cols-3">{workflows.map(([title, copy, type]) => <WorkflowCard key={title} title={title} copy={copy} type={type} />)}</div></section>
