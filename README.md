@@ -26,10 +26,11 @@ The product requirements and architecture references live in the sibling `prompt
 
 ```bash
 pnpm install --frozen-lockfile
+pnpm prisma db push
 pnpm dev
 ```
 
-Open `http://localhost:3000`. Prisma Client is generated automatically before production builds. To regenerate it explicitly, run:
+Open `http://localhost:3000`. `pnpm prisma db push` creates or synchronizes the local PostgreSQL schema; it does not seed business data. Prisma Client is generated automatically before production builds. To regenerate it explicitly, run:
 
 ```bash
 pnpm prisma generate
@@ -93,7 +94,7 @@ This repository includes a Render Blueprint at [`render.yaml`](render.yaml). It 
 1. Push the `nirmaan-next` directory to a Git repository.
 2. In Render, choose **New → Blueprint**, select that repository, and accept the generated `nirmaan-setu` web service and `nirmaan-setu-db` database.
 3. Set `GROQ_API_KEY` in the Render web service's Environment settings, then deploy. The Blueprint deliberately marks this as a non-synced secret, so its value is never stored in Git.
-4. The container applies the Prisma schema before it starts the web server; no browser-local mock mode is used.
+4. The container synchronizes the Prisma schema before it starts the web server; no browser-local mock mode is used. The health check at `/api/health` reports success only after a database query succeeds.
 5. Open `https://YOUR-SERVICE.onrender.com/api/health`. It returns `{"status":"ok","database":"connected"}` when the backend is live.
 6. For the live judging path, select **Load judging demo** on `/projects`, record or type a field observation in `/field-log`, sync it, review low-confidence matches in `/reviewer-queue`, then open the project Gantt to show the resulting schedule impact.
 

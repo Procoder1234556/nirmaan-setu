@@ -37,7 +37,6 @@ export function ReviewerQueuePage() {
   // Sync active candidate when item changes
   useEffect(() => {
     if (currentItem) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setActiveCandidateId(currentItem.topCandidate.id);
       setProgressDelta(currentItem.progressDeltaPercent || 85);
     }

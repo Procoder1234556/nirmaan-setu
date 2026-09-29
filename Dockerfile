@@ -16,4 +16,4 @@ ENV NODE_ENV=production
 ENV PORT=10000
 COPY --from=build /app ./
 EXPOSE 10000
-CMD ["sh", "-c", "pnpm prisma db push --skip-generate && pnpm start -p ${PORT}"]
+CMD ["sh", "-c", "pnpm prisma db push --skip-generate && exec pnpm start -p ${PORT}"]

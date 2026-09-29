@@ -3,7 +3,7 @@
 > **Project**: Nirmaan Setu (SIH26122 — Oil India Limited)  
 > **Platform**: Next.js 15 (App Router + React Server Actions + Prisma ORM + PostgreSQL)  
 > **Host Environment**: Native Windows (No WSL / No Docker required)  
-> **Status**: 100% Invariant & Specification Compliant with all root documentation.
+> **Status**: As-built compatibility map for the hackathon web demonstration. The canonical runtime is the Next.js, Prisma, and PostgreSQL application in this repository. The Python/mobile/pgvector architecture in `prompts-directory` remains a future-product reference, not a claim about the shipped implementation.
 
 ---
 

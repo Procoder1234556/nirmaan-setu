@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { NirmaanHeader } from '../components/NirmaanHeader';
 import {
@@ -121,7 +122,7 @@ export function ProjectDetailsPage(props: any) {
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">Project controls</p>
             <h2 className="mt-3 text-2xl font-bold tracking-tight text-foreground">This project is no longer available.</h2>
             <p className="mt-3 text-sm leading-6 text-muted-foreground">The schedule may have been replaced or this link may be out of date. Return to the portfolio to select an active project.</p>
-            <a href="/projects" className="mt-6 inline-flex rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">Back to Projects Portfolio</a>
+            <Link href="/projects" className="mt-6 inline-flex rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">Back to Projects Portfolio</Link>
           </section>
         </main>
       ) : (
@@ -130,13 +131,13 @@ export function ProjectDetailsPage(props: any) {
         {/* Back Button & Project Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-border pb-6">
           <div>
-            <a
+            <Link
               href="/projects"
               className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-foreground mb-2"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               Back to Projects Portfolio
-            </a>
+            </Link>
             <div className="flex flex-wrap items-center gap-3">
               <h2 className="text-2xl font-bold tracking-tight text-foreground">
                 {project?.name || 'Assam Pipeline Capital Project'}

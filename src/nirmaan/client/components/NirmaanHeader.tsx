@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useReviewerQueue } from '../operationsClient';
 import {
   HardHat,
@@ -94,7 +95,7 @@ export function NirmaanHeader({ currentTab, projectId }: NirmaanHeaderProps) {
         </div>
       )}
       <aside className="fixed inset-y-0 left-0 z-40 hidden w-72 flex-col border-r border-emerald-950/8 bg-white px-5 py-6 lg:flex">
-        <a href="/projects" className="flex items-center gap-3 px-2">
+        <Link href="/projects" className="flex items-center gap-3 px-2">
           <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#0d5b3b] text-white shadow-lg shadow-emerald-900/15">
             <HardHat className="h-5 w-5" />
           </div>
@@ -102,7 +103,7 @@ export function NirmaanHeader({ currentTab, projectId }: NirmaanHeaderProps) {
             <h1 className="text-lg font-bold tracking-tight text-slate-950">Nirmaan Setu</h1>
             <p className="text-[11px] font-medium text-slate-400">Project controls workspace</p>
           </div>
-        </a>
+        </Link>
         <div className="mt-10 px-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">Workspace</div>
         <nav aria-label="Workspace navigation" className="mt-3 space-y-1">
             {navLinks.map((link) => {
