@@ -118,7 +118,7 @@ export function ReviewerQueuePage() {
     <div className="min-h-screen bg-background">
       <NirmaanHeader currentTab="queue" />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <main className="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-6 lg:ml-72 lg:mr-0 lg:max-w-[calc(100%-18rem)] lg:px-8">
         {/* Top Header & Keyboard Hotkeys Ribbon */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>

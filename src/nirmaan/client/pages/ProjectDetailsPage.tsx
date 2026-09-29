@@ -116,7 +116,7 @@ export function ProjectDetailsPage(props: any) {
       <NirmaanHeader currentTab="details" projectId={projectId} />
 
       {notFound && !isLoading ? (
-        <main className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:px-8">
+        <main className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:ml-72 lg:mr-0 lg:max-w-[calc(100%-18rem)] lg:px-8">
           <section className="rounded-2xl border border-border bg-card p-8 shadow-sm">
             <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">Project controls</p>
             <h2 className="mt-3 text-2xl font-bold tracking-tight text-foreground">This project is no longer available.</h2>
@@ -126,7 +126,7 @@ export function ProjectDetailsPage(props: any) {
         </main>
       ) : (
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      <main className="mx-auto max-w-7xl space-y-8 px-4 py-8 sm:px-6 lg:ml-72 lg:mr-0 lg:max-w-[calc(100%-18rem)] lg:px-8">
         {/* Back Button & Project Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-border pb-6">
           <div>
