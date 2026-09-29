@@ -28,7 +28,7 @@ export interface SyncFieldEventsInput {
     sourceType: 'MOBILE_VOICE' | 'MOBILE_FORM' | 'EXCEL_DPR';
     rawText: string;
     audioRecordingUrl?: string | null;
-    location: {
+    location?: {
       latitude: number;
       longitude: number;
       accuracyMeters: number;
@@ -340,8 +340,8 @@ export async function syncFieldEventsBatch(
   if (!Array.isArray(args.events)) throwHttpError(400, 'events must be an array');
   for (const event of args.events) {
     const location = event.location;
-    if (!location || !Number.isFinite(location.latitude) || !Number.isFinite(location.longitude) || !Number.isFinite(location.accuracyMeters) || Math.abs(location.latitude) > 90 || Math.abs(location.longitude) > 180 || Number.isNaN(new Date(location.capturedAt).getTime())) {
-      throwHttpError(400, 'Every field log must include a valid timestamp and current GPS location.');
+    if (location && (!Number.isFinite(location.latitude) || !Number.isFinite(location.longitude) || !Number.isFinite(location.accuracyMeters) || Math.abs(location.latitude) > 90 || Math.abs(location.longitude) > 180 || Number.isNaN(new Date(location.capturedAt).getTime()))) {
+      throwHttpError(400, 'A supplied GPS location must contain valid coordinates and timestamp.');
     }
   }
   const prisma = await getPrismaClient(context);
@@ -372,7 +372,7 @@ export async function syncFieldEventsBatch(
   // Persist reconciled events
   for (const item of batchResult.processedItems) {
     const { event, match, proposedProgressDelta } = item;
-    const location = event.location!;
+    const location = event.location;
     const supervisorId = await ensureSupervisor(prisma, event.supervisorId);
 
     const fieldEvent = await prisma.fieldEvent.upsert({
@@ -391,10 +391,10 @@ export async function syncFieldEventsBatch(
         rawText: event.rawText,
         audioRecordingUrl: event.audioRecordingUrl,
         eventTimestampHw: new Date(event.eventTimestampHw),
-        latitude: location.latitude,
-        longitude: location.longitude,
-        locationAccuracyMeters: location.accuracyMeters,
-        locationCapturedAt: new Date(location.capturedAt),
+        latitude: location?.latitude,
+        longitude: location?.longitude,
+        locationAccuracyMeters: location?.accuracyMeters,
+        locationCapturedAt: location ? new Date(location.capturedAt) : undefined,
         monotonicSeq: BigInt(event.monotonicSeq.toString()),
         reconciledCausalOrder: event.reconciledCausalOrder,
         matchedActivityId: match.topCandidate?.id,
