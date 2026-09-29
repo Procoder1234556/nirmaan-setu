@@ -159,7 +159,32 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .hero-mosaic svg,
-  .hero-mosaic polygon {
+  .hero-mosaic polygon,
+  .record-flow path,
+  .record-flow circle {
     animation: none;
   }
+}
+
+.record-flow path {
+  stroke-dasharray: 12 10;
+  animation: nirmaan-record-flow 8s linear infinite;
+}
+
+.record-flow circle {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: nirmaan-record-sprinkle 5.5s ease-in-out infinite alternate;
+}
+
+.record-flow circle:nth-of-type(4n) { animation-delay: -1.2s; }
+.record-flow circle:nth-of-type(7n) { animation-delay: -2.8s; animation-duration: 7s; }
+
+@keyframes nirmaan-record-flow {
+  to { stroke-dashoffset: -88; }
+}
+
+@keyframes nirmaan-record-sprinkle {
+  from { transform: translate3d(0, 0, 0) scale(1); opacity: 0.55; }
+  to { transform: translate3d(0, -5px, 0) scale(1.28); opacity: 1; }
 }
