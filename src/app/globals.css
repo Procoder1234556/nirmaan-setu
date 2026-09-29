@@ -126,3 +126,40 @@ body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
 }
+
+/* The landing-page mosaic moves as a single slow current while a sparse set of
+   triangles drifts independently, keeping the hero alive without distracting
+   from the headline. */
+.hero-mosaic svg {
+  width: 104%;
+  margin-left: -2%;
+  animation: nirmaan-mosaic-flow 16s cubic-bezier(0.42, 0, 0.25, 1) infinite alternate;
+  will-change: transform;
+}
+
+.hero-mosaic polygon {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: nirmaan-triangle-sprinkle 6s ease-in-out infinite alternate;
+}
+
+.hero-mosaic polygon:nth-child(4n) { animation-delay: -1.5s; animation-duration: 7.5s; }
+.hero-mosaic polygon:nth-child(5n) { animation-delay: -3s; animation-duration: 8.5s; }
+.hero-mosaic polygon:nth-child(7n) { animation-delay: -4.5s; animation-duration: 6.8s; }
+
+@keyframes nirmaan-mosaic-flow {
+  from { transform: translate3d(-1%, 0, 0) scale(1.01); }
+  to { transform: translate3d(1%, -1.5%, 0) scale(1.04); }
+}
+
+@keyframes nirmaan-triangle-sprinkle {
+  from { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 1; }
+  to { transform: translate3d(2px, -3px, 0) rotate(1deg); opacity: 0.72; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-mosaic svg,
+  .hero-mosaic polygon {
+    animation: none;
+  }
+}
