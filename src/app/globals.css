@@ -152,15 +152,21 @@ html {
   will-change: transform;
 }
 
-.hero-mosaic polygon {
+.hero-mosaic::after {
+  position: absolute;
+  inset: -20% -35%;
+  content: "";
+  background: linear-gradient(110deg, transparent 39%, rgba(255, 255, 255, 0.38) 50%, transparent 61%);
+  animation: nirmaan-mosaic-sheen 7s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.hero-mosaic-piece {
   transform-box: fill-box;
   transform-origin: center;
   animation: nirmaan-triangle-sprinkle 6s ease-in-out infinite alternate;
+  will-change: transform, opacity;
 }
-
-.hero-mosaic polygon:nth-child(4n) { animation-delay: -1.5s; animation-duration: 7.5s; }
-.hero-mosaic polygon:nth-child(5n) { animation-delay: -3s; animation-duration: 8.5s; }
-.hero-mosaic polygon:nth-child(7n) { animation-delay: -4.5s; animation-duration: 6.8s; }
 
 @keyframes nirmaan-mosaic-flow {
   from { transform: translate3d(-1%, 0, 0) scale(1.01); }
@@ -170,6 +176,11 @@ html {
 @keyframes nirmaan-triangle-sprinkle {
   from { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 1; }
   to { transform: translate3d(2px, -3px, 0) rotate(1deg); opacity: 0.72; }
+}
+
+@keyframes nirmaan-mosaic-sheen {
+  from { transform: translate3d(-38%, 0, 0); }
+  to { transform: translate3d(38%, 0, 0); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -184,7 +195,8 @@ html {
   }
 
   .hero-mosaic svg,
-  .hero-mosaic polygon,
+  .hero-mosaic::after,
+  .hero-mosaic-piece,
   .record-flow path,
   .record-flow circle {
     animation: none;
